@@ -1,0 +1,13 @@
+final_rank,priority,name,d_peptide_sequence,l_sequence,source,selection_stage,structure_file,experimental_status,wetlab_activity
+1,P1,VIIDVD_1,dvdiiv,VIIDVD,IF_02,P1-P3 plus manual structural review,dvdiiv_20260804_1353558_model_0.cif,selected_for_synthesis,not_measured
+2,P1,PIRIPE_1,epirip,PIRIPE,IF_02,P1-P3 plus manual structural review,epirip_20260804_1354291_model_0.cif,selected_for_synthesis,not_measured
+3,P1,ITSSGEITLSF_1,fsltiegssti,ITSSGEITLSF,IF_02,P1-P3 plus manual structural review,fsltiegssti_20260804_1354713_model_0.cif,selected_for_synthesis,not_measured
+4,P1,GPTININ_1,ninitpg,GPTININ,IF_02,P1-P3 plus manual structural review,ninitpg_20260805_1360394_model_0.cif,selected_for_synthesis,not_measured
+5,P1,GSSSTLTISNP_1,pnsitltsssg,GSSSTLTISNP,IF_02,P1-P3 plus manual structural review,pnsitltsssg_20260806_1362870_model_0.cif,selected_for_synthesis,not_measured
+6,P1,VTVEGSSLSLS_1,slslssgevtv,VTVEGSSLSLS,IF_02,P1-P3 plus manual structural review,slslssgevtv_20260806_1364431_model_0.cif,selected_for_synthesis,not_measured
+7,P1,DYSLLIITT_1,ttiillsyd,DYSLLIITT,IF_02,P1-P3 plus manual structural review,ttiillsyd_20260807_1366922_model_0.cif,selected_for_synthesis,not_measured
+8,P1,YPIPNV_1,vnpipy,YPIPNV,IF_02,P1-P3 plus manual structural review,vnpipy_20260807_1368168_model_0.cif,selected_for_synthesis,not_measured
+9,P2,PKIDLS_1,sldikp,PKIDLS,IF_02,P1-P3 plus manual structural review,sldikp_20260806_1364282_model_0.cif,selected_for_synthesis,not_measured
+10,P3,SLTITSDIIIS_1,siiidstitls,SLTITSDIIIS,IF_02,P1-P3 plus manual structural review,siiidstitls_20260806_1363958_model_0.cif,selected_for_synthesis,not_measured
+11,P4,VTNSGNLTVSF_1,fsvtlngsntv,VTNSGNLTVSF,IF_02,P4 plus manual structural review,fsvtlngsntv_20260804_1354764_model_0.cif,selected_for_synthesis,not_measured
+12,P4,GATTLSISVNL_1,lnvsislttag,GATTLSISVNL,IF_02,P4 plus manual structural review,lnvsislttag_20260805_1359024_model_0.cif,selected_for_synthesis,not_measured

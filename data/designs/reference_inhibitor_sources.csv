@@ -1,0 +1,39 @@
+reference_entry_ids,candidate_names,source_title,publication,year,doi_or_url,verification_status
+1-1,NFGAIL,A hIAPP-derived all-D-amino-acid inhibits hIAPP fibrillation efficiently at membrane surface by targeting alpha-helical oligomeric intermediates,FEBS Letters,2014,,title_from_source_workbook
+2-1,NFGAILSS,Natural human IAPP sequence,,,https://www.uniprot.org/uniprotkb/P10997,reference_sequence
+"2-2;2-3","QYGPILSS; NWGPILSS",Synergistic effect of mutations in the amyloidogenic core of human amylin affords a new potent inhibitor of hAM fibrillation: computational design and experimental validation,ACS Chemical Neuroscience,2026,,title_from_source_workbook
+3-1,QBP1,Amino acid sequence requirements of peptides that inhibit polyglutamine-protein aggregation and cell death,Biochemical and Biophysical Research Communications,2001,,title_from_source_workbook
+4-1,SNNFGA,Design of peptide-based inhibitors of human islet amyloid polypeptide fibrillogenesis,Journal of Molecular Biology,2002,https://doi.org/10.1016/S0022-2836(02)00164-X,doi_verified
+"4-2;4-3;4-4","TNNWPL; TQNWAP; TQNWVP",Modulation of hIAPP fibrillation by rationally designed hexapeptides revealed by molecular dynamics and experimental investigations,ACS Chemical Neuroscience,2025,,title_from_source_workbook
+5-1,SS,Natural human IAPP sequence,,,https://www.uniprot.org/uniprotkb/P10997,reference_sequence
+"5-2;5-3;5-4;5-5","SLS; LSLS; SNS; NSNS",O-glycosylated peptides curtail the aggregation and toxicity of human islet amyloid polypeptide,Communications Biology,2025,https://doi.org/10.1038/s42003-025-08516-8,doi_verified
+6-1,dfPSMalpha3,Cytotoxic PSMalpha3 inhibits the aggregation of human insulin,Physical Chemistry Chemical Physics,2024,,title_from_source_workbook
+"7-1;7-2;7-3","cyclo-CHVVGVI; cyclo-CDLGVFR; cyclo-CRCVFSG",Continuous selection in E. coli to identify cyclic peptide inhibitors of protein aggregation,Nature Chemical Biology,2025,,title_from_source_workbook
+8-1,C5,Peptide conjugates of benzene carboxylic acids as agonists and antagonists of amylin aggregation,Bioconjugate Chemistry,2017,,title_from_source_workbook
+"9-1;9-2","HSSQN; HSSNQ",In silico design and identification of new peptides for mitigating hIAPP aggregation in type 2 diabetes,Journal of Biomolecular Structure and Dynamics,2024,,title_from_source_workbook
+"10-1;10-2","FGA-deltaF-L; FGA-deltaF-I",Conformationally restricted short peptides inhibit human islet amyloid polypeptide fibrillization,Chemical Communications,2013,,title_from_source_workbook
+11-1,ANFLVH,Amyloid inhibitors enhance survival of cultured human islets,Biochimica et Biophysica Acta - General Subjects,2009,,title_from_source_workbook
+"12-1;12-2;12-3;12-4;12-5;12-6;12-7;12-8;12-9","AT; SA; KS; KT; KN; RF; cyclic-KS; cyclic-KN; cyclic-KT",New peptide inhibitors modulate the self-assembly of islet amyloid polypeptide residues 11-20 in vitro,European Journal of Pharmacology,2017,,title_from_source_workbook
+13-1,IAPP-GI,Design of a mimic of nonamyloidogenic and bioactive human islet amyloid polypeptide as nanomolar affinity inhibitor of IAPP cytotoxic fibrillogenesis,Proceedings of the National Academy of Sciences,2006,,title_from_source_workbook
+14-1,Pramlintide,Pramlintide for the treatment of insulin-requiring diabetes mellitus - rationale and review of clinical data,Drugs,2004,,title_from_source_workbook
+15-1,NYGAILSS,Inhibition of islet amyloid polypeptide fibril formation: a potential role for heteroaromatic interactions,Biochemistry,2004,https://doi.org/10.1021/bi048582a,doi_verified
+16-1,I26P mutant,Amyloidogenic human islet amyloid polypeptide into a potent fibrillization inhibitor,Journal of the American Chemical Society,2007,,title_from_source_workbook
+17-1,rIAPP,Natural rat IAPP sequence,,,https://www.uniprot.org/uniprotkb/P12969,reference_sequence
+"18-1;18-2;18-3","Arg-1; Arg-2; Mem-T",Charge-based inhibitors of amylin fibrillization and toxicity,Journal of Diabetes Research,2015,,title_from_source_workbook
+"19-1;19-2;19-3;19-4","H18K-IAPP; H18R-IAPP; H18E-IAPP; H18A-IAPP",Residue-specific effects of human islet polypeptide amyloid on self-assembly and cell toxicity,Biochimie,2017,,title_from_source_workbook
+"20-1;20-2","Inhibitor-2; Inhibitor-3",Modeling the interface between islet amyloid polypeptide and insulin-based aggregation inhibitors: correlation to aggregation kinetics and membrane damage,Journal of Chemical Information and Modeling,2012,,title_from_source_workbook
+21-1,TK9,Self-assembly of a nine-residue amyloid-forming peptide fragment of SARS coronavirus E-protein: mechanism of self-aggregation and amyloid inhibition of hIAPP,Biochemistry,2015,,title_from_source_workbook
+22-1,FLPNF,A novel pentapeptide inhibitor reduces amyloid deposit formation by direct interaction with hIAPP,International Journal of Endocrinology,2019,,title_from_source_workbook
+"23-1;23-2","Tyr2; Tyr3",Oligotyrosines inhibit amyloid formation of human islet amyloid polypeptide in a tyrosine-number-dependent manner,ACS Biomaterials Science and Engineering,2019,,title_from_source_workbook
+24-1,LA12,Monomer-targeting affinity peptide inhibitors of amyloid with no self-fibrillation and low cytotoxicity,Chemical Communications,2020,,title_from_source_workbook
+"25-1;25-2","SNNF(N-Me)GA(N-Me)ILSS; NF(N-Me)GA(N-Me)IL",Structure-based design and study of nonamyloidogenic double N-methylated IAPP amyloid-core sequences as inhibitors of IAPP amyloid formation and cytotoxicity,Journal of Molecular Biology,2002,,title_from_source_workbook
+"26-1;26-2;26-3","IO8; N1-IO8; N2-IO8",Development of proteolytically stable N-methylated peptide inhibitors of aggregation of the amylin peptide implicated in type 2 diabetes,Interface Focus,2017,,title_from_source_workbook
+"27-1;27-2;27-3","WW2; WW4; YY2",Designed hairpin peptides interfere with amyloidogenesis pathways: fibril formation and cytotoxicity inhibition and interception of the preamyloid state,Biochemistry,2011,https://doi.org/10.1021/bi200760h,doi_verified
+28-1,AP5,Peptides composed of alternating L- and D-amino acids inhibit amyloidogenesis in three distinct amyloid systems independent of sequence,Journal of Molecular Biology,2016,https://doi.org/10.1016/j.jmb.2016.03.013,doi_verified
+"29-1;29-2;29-3","Aib-NF-Aib-VHSS; Aib-NF-Aib-VH; Aib-NF-Aib-V",Inhibition of amyloid fibril formation by peptide analogues modified with alpha-aminoisobutyric acid,Angewandte Chemie International Edition,2004,,title_from_source_workbook
+"30-1;30-2","NFGAX2L; NFX2AX2L",Disaggregation of amylin aggregate by conformationally restricted aminobenzoic-acid-containing alpha/beta and alpha/gamma hybrid peptidomimetics,Scientific Reports,2017,,title_from_source_workbook
+"31-1;31-2","beta-cap-WW2; cyclo-WW2",Peptide inhibitors of the amyloidogenesis of IAPP: verification of the hairpin-binding geometry hypothesis,FEBS Letters,2016,,title_from_source_workbook
+"32-1;32-2;32-3","MCIP 2a; MCIP 2b; MCIP 2e",Designed macrocyclic peptides as nanomolar amyloid inhibitors based on minimal recognition elements,Angewandte Chemie International Edition,2018,,title_from_source_workbook
+33-1,C14-RRRR-NH2,Design and study of lipopeptide inhibitors for preventing aggregation of human islet amyloid polypeptide residues 11-20,Journal of Peptide Science,2018,,title_from_source_workbook
+34-1,NCAM1-PrP,Prion-protein-derived cell-penetrating peptide inhibits type II diabetes-associated islet amyloid polypeptide aggregation and cytotoxicity,Biochemistry,2026,,title_from_source_workbook
+"35-1;35-2;35-3","TNGQ; MANT; YMSV",Disaggregation of islet amyloid polypeptide fibrils as a potential antifibrillation mechanism of tetrapeptide TNGQ,International Journal of Molecular Sciences,2022,,title_from_source_workbook

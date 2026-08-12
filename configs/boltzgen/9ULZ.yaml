@@ -1,0 +1,15 @@
+entities:
+  - protein:
+      id: Y
+      sequence: 6..12
+  - file:
+      path: 9ULZ.cif
+      include:
+        - chain:
+            id: D
+            res_index: 19..37
+      binding_types:
+        - chain:
+            id: D
+            binding: 21..37
+

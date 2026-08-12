@@ -1,0 +1,16 @@
+cff-version: 1.2.0
+message: "If you use this workflow, please cite this repository, BoltzGen, Boltz-2, and PDB 9ULZ."
+title: "AI-assisted D-peptide design against hIAPP"
+type: software
+version: 1.0.0
+date-released: 2026-08-12
+license: MIT
+authors:
+  - name: "hIAPP D-peptide design competition team"
+repository-code: "https://github.com/PerinMu/hIAPP-D-peptide-design"
+keywords:
+  - hIAPP
+  - D-peptide
+  - peptide design
+  - BoltzGen
+  - Boltz-2

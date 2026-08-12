@@ -1,0 +1,2 @@
+experiment_id,run_date,plate_id,well,time_min,fluorescence_au,hIAPP_concentration_uM,peptide_id,peptide_concentration_uM,condition_role,independent_repeat,technical_replicate,operator,hIAPP_lot,peptide_lot,buffer,pH,temperature_C,notes
+

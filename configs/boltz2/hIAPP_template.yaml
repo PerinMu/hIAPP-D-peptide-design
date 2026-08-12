@@ -1,0 +1,20 @@
+sequences:
+  - protein:
+      id: A
+      sequence: HSSNNFGAILSSTNVGSNTY
+      msa: empty
+  - ligand:
+      id: X
+      smiles: '__PEPTIDE_SMILES__'
+
+templates:
+  - cif: 9ULZ.cif
+    chain_id: A
+    template_id: D
+    force: true
+    threshold: 0.1
+
+properties:
+  - affinity:
+      binder: X
+

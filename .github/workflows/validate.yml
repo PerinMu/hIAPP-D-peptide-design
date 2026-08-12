@@ -1,0 +1,44 @@
+name: validate
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+      - run: python -m pip install -r requirements.txt
+      - run: python -m compileall scripts
+      - run: bash -n hpc/*.sh hpc/*.slurm
+      - run: >-
+          ! grep -rPn '[\x{3400}-\x{9FFF}\x{3040}-\x{30FF}\x{AC00}-\x{D7AF}]'
+          --include='*.md' --include='*.py' --include='*.sh' --include='*.slurm'
+          --include='*.yaml' --include='*.yml' --include='*.csv' --include='*.ipynb' .
+      - run: python scripts/screen_candidates.py data/scored/merged_all_2_scored.csv results/screening
+      - run: >-
+          python scripts/prepare_structure_review.py
+          results/screening/p1_p2_p3_top32.csv
+          results/screening/p4_top10.csv
+          /tmp/structure_review.csv
+      - run: >-
+          python -c "import ast,json,pathlib;
+          [ast.parse(''.join(c['source'])) for p in pathlib.Path('notebooks').glob('*.ipynb')
+          for c in json.loads(p.read_text())['cells'] if c['cell_type']=='code']"
+      - run: >-
+          python -c "import csv;
+          rows=list(csv.DictReader(open('data/designs/reference_inhibitors_smiles.csv',encoding='utf-8-sig')));
+          ids={r['seq_rev'].strip() for r in rows if r.get('seq_rev') and r.get('smiles')};
+          src=list(csv.DictReader(open('data/designs/reference_inhibitor_sources.csv',encoding='utf-8-sig')));
+          covered={x.strip() for r in src for x in r['reference_entry_ids'].split(';')};
+          assert len(ids)==76 and ids==covered"
+      - run: >-
+          jupyter nbconvert --to notebook --execute
+          notebooks/01_reproduce_screening.ipynb
+          --output /tmp/01_reproduce_screening.executed.ipynb
+          --ExecutePreprocessor.timeout=600
