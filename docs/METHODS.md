@@ -42,7 +42,7 @@ descriptor bibliography are provided in
 Each D-peptide SMILES was paired with the hIAPP sequence
 `HSSNNFGAILSSTNVGSNTY` and the 9ULZ template. Boltz-2 returned complex
 confidence metrics and three affinity prediction heads. Repeated/interrupted
-cluster jobs were recovered by detecting missing `*_model_0.cif` files and
+cluster jobs were resumed by detecting missing `*_model_0.cif` files and
 resubmitting their original YAML inputs. Batch outputs were merged by
 `sample_id`; 9,806 design/IF rows entered the analysis table.
 
@@ -128,8 +128,8 @@ O_P4 = 0.50 S_P4 + 0.35 A + 0.15 D
 ```
 
 Thirty candidates passed and the top ten entered structural review. A prior
-exploratory workbook used `B >= 0.72`; the finalized competition workflow and
-this repository use `B >= 0.75` consistently.
+exploratory analysis used `B >= 0.72`; the finalized workflow and this
+repository use `B >= 0.75` consistently.
 
 ## Structural review and final selection
 

@@ -1,8 +1,7 @@
 # Portable HPC templates
 
-These scripts capture the original workflow while removing cluster usernames,
-private proxy endpoints and fixed absolute paths. Inspect and edit every `#SBATCH`
-directive for your site.
+These scripts provide a path-configurable Slurm implementation of the complete
+GPU workflow. Inspect and edit every `#SBATCH` directive for your site.
 
 1. Follow `notebooks/00_full_generation_to_selection.ipynb` for the full order.
 2. Set `REPO_ROOT`, `PROJECT_ROOT`, environment names and model/cache paths.
@@ -20,7 +19,6 @@ The bounded dispatcher records submitted YAML stems in a state directory and
 limits jobs whose names start with the chosen prefix. It does not delete or
 overwrite model results.
 
-The historical scripts were recovered. The current files preserve their control
-flow while replacing usernames, private paths and proxy configuration with
-environment variables. Original SHA256 values are recorded under
-`legacy/original_hpc/README.md`.
+All resource requests, environment names, cache locations, output paths, and
+concurrency limits are controlled through command arguments or environment
+variables, making the templates portable across Slurm clusters.
