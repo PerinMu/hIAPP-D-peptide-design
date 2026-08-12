@@ -1,5 +1,23 @@
 # Computational methods
 
+## Framework scope
+
+This repository implements a reusable structure-guided reverse-D peptide design
+framework and instantiates it for hIAPP. The reusable stages are target/site
+specification, all-atom generative co-design, inverse-folding diversification,
+stereochemistry-aware reverse-D conversion, independent complex prediction,
+physicochemical characterization, multi-objective prioritization, diversity
+control, structural review, and experimental handoff.
+
+BoltzGen generates the initial sequence–structure hypotheses in an L-amino-acid
+representation. The sequences are subsequently reversed and converted to
+explicit D-stereochemical SMILES. This retro-inverso step is a design hypothesis,
+not a proof that the generated L-backbone geometry is exactly retained. Complex
+prediction and structure review test computational consistency; binding and
+functional activity require experiment. Scientific motivation and comparison
+with mirror-image display, hotspot/scaffold design, docking, and molecular
+dynamics are provided in [`docs/BACKGROUND.md`](BACKGROUND.md).
+
 ## Template preparation and candidate generation
 
 PDB 9ULZ was used as the starting hIAPP fibril template. Chain D residues

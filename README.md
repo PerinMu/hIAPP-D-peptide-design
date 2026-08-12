@@ -1,21 +1,36 @@
-# AI-assisted D-peptide design against hIAPP
+# Generative D-peptide design: an end-to-end framework
 
 [![Reproducibility checks](https://github.com/PerinMu/hIAPP-D-peptide-design/actions/workflows/validate.yml/badge.svg)](https://github.com/PerinMu/hIAPP-D-peptide-design/actions/workflows/validate.yml)
 [![Python 3.11+](https://img.shields.io/badge/Python-3.11%2B-3776AB?logo=python&logoColor=white)](https://www.python.org/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
-An end-to-end, auditable workflow for generating, predicting, ranking, and
-selecting D-peptide candidates against human islet amyloid polypeptide (hIAPP).
-The pipeline combines BoltzGen, BoltzIF, Boltz-2, transparent sequence-property
-calculations, multi-objective screening, and structure review.
+An end-to-end, auditable framework for **structure-guided de novo D-peptide
+design**. It connects all-atom sequence–structure co-design, inverse folding,
+explicit D-stereochemical encoding, complex prediction, interpretable
+developability analysis, multi-objective prioritization, and experimental
+handoff in one reproducible workflow.
+
+Human islet amyloid polypeptide (hIAPP) is the worked case study. Starting from
+PDB 9ULZ, the campaign generated a 9,806-design ranking pool and selected 12
+reverse-D peptides for testing as inhibitors of amyloid aggregation. The same
+framework can be adapted to another structurally characterized target by
+replacing the target structure, binding-site definition, campaign parameters,
+and assay plan.
 
 ![Computational design and screening workflow](docs/assets/workflow.png)
 
 ## Highlights
 
-- **Complete design funnel:** structural target preparation, 2,000-design
-  generation, inverse folding, 9,806-candidate prediction/ranking, four-layer
-  prioritization, and a 12-peptide synthesis set.
+- **General, target-adaptable architecture:** target preparation, generative
+  design, sequence diversification, D-stereochemical conversion, model-based
+  validation, multi-metric screening, structure review, and wet-lab handoff.
+- **Modern all-atom generation:** BoltzGen jointly samples amino-acid identities
+  and all-atom structures while conditioning on the target and intended binding
+  site, reducing dependence on a manually fixed peptide scaffold or a single
+  physics-based energy function.
+- **Complete hIAPP case study:** 2,000 requested designs, BoltzIF
+  diversification, 9,806 ranked candidates, four-layer prioritization, and a
+  12-peptide synthesis set targeting the amyloidogenic hIAPP region.
 - **Two levels of reproducibility:** a full GPU/Slurm notebook for end-to-end
   regeneration and a fast CPU notebook that reproduces every reported count
   from committed data.
@@ -32,6 +47,7 @@ calculations, multi-objective screening, and structure review.
 
 | Resource | What it provides |
 |---|---|
+| **[Scientific background and innovation](docs/BACKGROUND.md)** | D-peptide rationale, comparison with established discovery routes, framework scope, and evidence boundaries. |
 | **[Full design-to-selection notebook](notebooks/00_full_generation_to_selection.ipynb)** | Step-by-step BoltzGen generation, BoltzIF redesign, Boltz-2 prediction, retry handling, score collection, screening, and structure review on a Slurm GPU server. |
 | **[Screening reproduction notebook](notebooks/01_reproduce_screening.ipynb)** | CPU-only reconstruction of every reported screening count and the final candidate manifest from committed data. |
 | **[Final 12 candidates](results/final_candidates/final_12.csv)** | Machine-readable synthesis shortlist with priority tier, design provenance, experimental status, and structure filenames. |
@@ -79,38 +95,82 @@ Lower-case letters denote the all-D sequence convention used by this project.
 
 </details>
 
-## Scientific objective
+## Scientific rationale and innovation
+
+D-peptides preserve peptide-like recognition chemistry while generally
+resisting proteolytic degradation better than their L-enantiomeric counterparts.
+Established discovery routes include mirror-image phage display and
+structure-based methods built around hotspot grafting, predefined scaffolds,
+docking, empirical energy functions, free-energy calculations, and molecular
+dynamics. These approaches are valuable, but can require a chemically
+synthesized mirror target, a known interaction motif, a suitable scaffold, or
+substantial per-candidate sampling.
+
+This framework explores a complementary route. BoltzGen is a general all-atom
+diffusion model that can generate residue identities and three-dimensional
+structure together while conditioning on a target and binding site. BoltzIF
+expands sequence diversity; stereochemistry-aware reverse-D conversion creates
+the D-peptide representations; Boltz-2 supplies independent complex-confidence
+signals; and an explicit multi-objective layer balances predicted interaction,
+structure quality, solubility, aggregation risk, stability, diversity, and
+synthetic tractability.
+
+The resulting advantage is **broader, automated candidate-space exploration
+with a fully traceable selection path**, not an unqualified claim that one model
+outperforms every established D-peptide method. Experimental performance remains
+target- and assay-dependent. See the full [background and method comparison](docs/BACKGROUND.md).
+
+## hIAPP case study
 
 hIAPP aggregation and islet amyloid are associated with beta-cell dysfunction
-in type 2 diabetes. This project targets the amyloidogenic C-terminal region of
-hIAPP with proteolytically attractive D-peptide candidates. PDB 9ULZ provides
-the structural template: chain D residues 19–37 are retained, and residues
-21–37 define the intended binding region.
+in type 2 diabetes. The case study targets its amyloidogenic C-terminal region:
+PDB 9ULZ chain D residues 19–37 are retained, and residues 21–37 define the
+intended binding region.
 
-The central optimization challenge is multi-objective. A useful candidate must
-balance predicted binding, structural confidence, aggregation propensity,
-solubility, chemical stability, diversity, and synthetic tractability. The
-workflow therefore integrates model-derived signals with interpretable
-physicochemical descriptors and explicit structure review instead of relying on
-a single score.
+This is a demanding multi-objective problem. A useful anti-aggregation candidate
+must combine plausible target engagement with structural confidence, low
+self-aggregation risk, adequate solubility and stability, sequence diversity,
+and synthetic tractability. The hIAPP campaign demonstrates the complete
+computational funnel and produces a traceable 12-peptide experimental shortlist.
+Measured inhibition is not inferred from model scores; activity claims require
+deposited dose–response and replicate-level assay data.
 
 ## Workflow
 
-1. **BoltzGen backbone generation** — 2,000 peptide designs using the
-   `peptide-anything` protocol and PDB 9ULZ.
-2. **BoltzIF sequence diversification** — four sequences per backbone at
+1. **Target and site specification** — define the target structure, retained
+   region, intended binding residues, and peptide design constraints.
+2. **BoltzGen all-atom co-design** — jointly generate peptide sequence and
+   structure in the target context; the hIAPP campaign requested 2,000 designs
+   with the `peptide-anything` protocol.
+3. **BoltzIF sequence diversification** — four sequences per backbone at
    temperature 0.2, with cysteine excluded.
-3. **Reverse-D encoding** — sequence reversal plus explicit D stereochemistry
+4. **Reverse-D encoding** — sequence reversal plus explicit D stereochemistry
    in linear-peptide SMILES.
-4. **Boltz-2 prediction** — hIAPP–peptide complex structures, confidence
+5. **Boltz-2 prediction** — target–peptide complex structures, confidence
    metrics, and three affinity heads.
-5. **Physicochemical characterization** — transparent sequence-only
+6. **Physicochemical characterization** — transparent sequence-only
    solubility, aggregation-risk, stability, permeability, and drug-likeness
    tendencies.
-6. **Four-layer prioritization** — hard filters, multi-metric ranking, P1–P4
+7. **Four-layer prioritization** — hard filters, multi-metric ranking, P1–P4
    tiers, sequence de-redundancy, and manual structure review.
-7. **Experimental shortlist** — 12 diverse D-peptides with traceable scores and
-   predicted complexes.
+8. **Experimental handoff** — a diverse candidate set with traceable scores,
+   predicted complexes, and a predefined assay-data schema.
+
+## Adapting the framework to a new target
+
+The reusable computational logic is target-agnostic; the biological inputs and
+decision thresholds are campaign-specific. To start a new campaign:
+
+1. replace the target structure and record its provenance;
+2. select the retained chains/residues and define the intended binding site;
+3. adjust peptide length, residue, cyclization, and generation constraints;
+4. update the Boltz-2 target/template YAML and run-size parameters;
+5. calibrate hard gates and ranking weights for the target and assay; and
+6. predefine appropriate activity, selectivity, toxicity, positive-control, and
+   negative-control experiments.
+
+The notebooks expose these values in parameter cells rather than hiding them in
+analysis code.
 
 ## Installation and dependencies
 
@@ -323,6 +383,7 @@ results.
 
 ## Documentation
 
+- [Scientific background and framework scope](docs/BACKGROUND.md)
 - [Computational methods](docs/METHODS.md)
 - [Physicochemical equations and references](docs/PHYSICOCHEMICAL.md)
 - [Data dictionary](docs/DATA_DICTIONARY.md)
