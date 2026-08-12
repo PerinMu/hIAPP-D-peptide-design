@@ -39,14 +39,14 @@ the recorded 9,806 denominator so that every published count is reproducible.
 - Generated YAML archives containing thousands of near-identical files.
 
 These are reproducible from the committed inputs and scripts but are unsuitable
-for ordinary Git history. For strict archival submission, attach them to a
-versioned release or deposit them in a data repository and record checksums and
-the permanent URL here.
+for ordinary Git history. For complete archival reproduction, attach them to a
+versioned release or deposit them in a data repository and record checksums plus
+a permanent URL.
 
-## Software provenance to record before final submission
+## Software and checkpoint provenance
 
-The original cluster notes did not capture immutable Git commit IDs for BoltzGen
-or Boltz. Before the competition deadline, record the exact environment used:
+For each independent generation or prediction run, record the exact software
+environment, source revision, and checkpoint checksum alongside the results:
 
 ```bash
 boltzgen --version
@@ -57,7 +57,8 @@ git -C /path/to/boltz rev-parse HEAD
 sha256sum /path/to/checkpoint.ckpt
 ```
 
-Do not publish proxy endpoints, usernames, private mount paths or access tokens.
+Preserve a release-safe environment record without credentials or
+machine-specific access configuration.
 
 ## Determinism
 
@@ -67,10 +68,9 @@ may vary with software/checkpoint versions, random seeds and hardware. Preserve
 the original result table as immutable evidence and write new reruns to a new
 versioned directory.
 
-## Historical HPC script recovery
+## Portable HPC execution
 
-The cluster scripts `submit_keep8.sh`, `run_lig_array_large.sh`, its identical
-`fixed` copy, `run_lig_one_large.sh` and the historical retry extractor were
-recovered. Because they contain private paths and a proxy endpoint, the public
-repository contains path-neutral counterparts plus a SHA256 provenance table in
-`legacy/original_hpc/README.md`.
+The `hpc/` directory provides path-configurable Slurm templates for BoltzGen,
+BoltzIF, bounded-concurrency Boltz-2 prediction, and resume-safe dispatch. The
+retry extractor compares every expected YAML identifier against successful
+model-0 CIF outputs, including inputs for which no output directory was created.

@@ -6,7 +6,7 @@
 #SBATCH --output=logs/%x_%j.log
 #SBATCH --error=logs/%x_%j.log
 
-# Public, configurable form of the historical Boltz single-YAML runner.
+# Configurable Boltz single-YAML runner for Slurm.
 
 set -euo pipefail
 export PYTHONUNBUFFERED=1
@@ -20,11 +20,6 @@ conda activate "${CONDA_ENV}"
 if [[ -n "${CUDA_MODULE:-}" ]]; then
   module load "${CUDA_MODULE}"
 fi
-if [[ -n "${HTTP_PROXY_URL:-}" ]]; then
-  export http_proxy=${HTTP_PROXY_URL}
-  export https_proxy=${HTTP_PROXY_URL}
-fi
-
 INPUT_DIR=${PROJECT_ROOT}/input
 LOG_DIR=${PROJECT_ROOT}/logs
 OUT_ROOT=${BOLTZ_OUTPUTS:-${PROJECT_ROOT}/outputs_boltz2}
