@@ -15,4 +15,5 @@ dispatch_state/
 data/intermediate/backbones/
 data/intermediate/inverse_folding_structures/
 data/raw/boltz_outputs/
-
+results/submission/run_metadata.json
+results/submission/screening/

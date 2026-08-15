@@ -1,5 +1,18 @@
 # Reproducibility and data lineage
 
+## One-command evaluator reproduction
+
+```bash
+conda env create -f environment.yml
+conda activate hiapp-d-peptide-analysis
+bash run.sh
+```
+
+This deterministic CPU entry point regenerates the screening tables and the
+standardized `results/submission/results.csv`. It also writes runtime metadata
+and SHA256 hashes. Neural design and prediction are separate stochastic GPU
+stages documented in `notebooks/00_full_generation_to_selection.ipynb`.
+
 ## Count reconciliation
 
 | Stage | Rows / designs | Unique / usable | Evidence in repository |
@@ -44,6 +57,12 @@ versioned release or deposit them in a data repository and record checksums plus
 a permanent URL.
 
 ## Software and checkpoint provenance
+
+The historical August 2026 run preserved checkpoint names, commands, inputs,
+CUDA choices, and outputs but not exact package revisions, checkpoint hashes,
+GPU/driver snapshots, or stochastic seeds. The Model Card records this gap. The
+commands below are mandatory capture steps for future campaigns, not claims
+about values that were not preserved.
 
 For each independent generation or prediction run, record the exact software
 environment, source revision, and checkpoint checksum alongside the results:

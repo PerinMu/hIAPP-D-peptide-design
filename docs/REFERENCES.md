@@ -137,6 +137,13 @@ validated by that source.
     islet amyloid polypeptide. *Commun Biol*. 2025.
     [doi:10.1038/s42003-025-08516-8](https://doi.org/10.1038/s42003-025-08516-8)
 
+## External sequence-search infrastructure
+
+27. Mirdita M, Schuetze K, Moriwaki Y, Heo L, Ovchinnikov S, Steinegger M.
+    ColabFold: making protein folding accessible to all. *Nat Methods*.
+    2022;19:679-682.
+    [doi:10.1038/s41592-022-01488-1](https://doi.org/10.1038/s41592-022-01488-1)
+
 The complete grouped title-level source mapping covering all 76
 literature/reference entries is available in
 `data/designs/reference_inhibitor_sources.csv`. `doi_verified` means the DOI was
