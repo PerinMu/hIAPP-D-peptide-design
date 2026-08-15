@@ -4,7 +4,7 @@
 # The script self-submits a one-GPU Slurm job and never reruns BoltzGen.
 #SBATCH --job-name=prov_boltzgen
 #SBATCH --gpus=1
-#SBATCH --time=01:00:00
+#SBATCH --time=02:00:00
 #SBATCH --output=provenance_boltzgen_%j.log
 #SBATCH --error=provenance_boltzgen_%j.log
 
@@ -71,6 +71,10 @@ hash_one() {
     fi
 }
 
+step() {
+    printf '[%s] %s\n' "$(date -u +%Y-%m-%dT%H:%M:%SZ)" "$*"
+}
+
 if [[ -r /etc/profile.d/modules.sh ]]; then
     # shellcheck disable=SC1091
     source /etc/profile.d/modules.sh
@@ -96,6 +100,7 @@ It does not contain model weights, generated structures, shell history, tokens, 
 Review the bundle before external publication because hostnames and account paths are preserved for provenance.
 EOF
 
+step "Collecting system, Slurm, GPU, and container metadata"
 capture system_identity.txt bash -c 'date -u; date; hostname; id; pwd; uname -a; cat /etc/os-release 2>/dev/null; lscpu; free -h'
 capture slurm_environment.txt bash -c 'env | LC_ALL=C sort | grep -E "^(SLURM_|CUDA_VISIBLE_DEVICES=)" || true'
 capture slurm_job.txt scontrol show job "${SLURM_JOB_ID}"
@@ -110,6 +115,7 @@ capture module_state.txt bash -lc 'source /etc/profile.d/modules.sh 2>/dev/null 
 capture singularity_version.txt singularity --version
 capture singularity_inspect.txt singularity inspect "${SIF}"
 
+step "Collecting the active BoltzGen/Conda environment"
 capture boltzgen_version.txt container_exec boltzgen --version
 capture boltzgen_help.txt container_exec boltzgen --help
 capture python_runtime.txt container_exec python -c 'import importlib.metadata as m, platform, sys; print("python", sys.version); print("platform", platform.platform()); names=["boltzgen","torch","numpy","pandas","rdkit","lightning","pytorch-lightning"]; [(print(n, m.version(n)) if n in {d.metadata.get("Name","").lower() for d in m.distributions()} else None) for n in names]'
@@ -121,29 +127,28 @@ capture conda_explicit.txt container_exec conda list --explicit
 capture conda_environment.yml container_exec conda env export --no-builds
 capture boltzgen_module_path.txt container_exec python -c 'import boltzgen, inspect; print(boltzgen.__file__); print(inspect.getfile(boltzgen))'
 
+step "Collecting source revisions and targeted model hashes"
 capture git_repositories.txt bash -c '
-find "'$SOFTWARE_ROOT'" -maxdepth 6 -type d -name .git -print 2>/dev/null | sort | while read -r dotgit; do
-  repo=${dotgit%/.git}; echo "REPOSITORY=$repo"; git -C "$repo" rev-parse HEAD 2>/dev/null || true; git -C "$repo" describe --always --dirty --tags 2>/dev/null || true; git -C "$repo" remote -v 2>/dev/null || true; git -C "$repo" status --short 2>/dev/null || true; echo; done'
+for repo in "'$SOFTWARE_ROOT'" "'$SOFTWARE_ROOT'/test" "'$SOFTWARE_ROOT'/test/workbench"; do
+  [[ -d "$repo" ]] || continue; echo "REPOSITORY_CANDIDATE=$repo"; git -C "$repo" rev-parse HEAD 2>/dev/null || true; git -C "$repo" describe --always --dirty --tags 2>/dev/null || true; git -C "$repo" remote -v 2>/dev/null || true; git -C "$repo" status --short 2>/dev/null || true; echo; done'
 
 {
     hash_one "${DESIGN_CHECKPOINT}"
     hash_one "${SIF}"
-    for root in "${HF_HOME_ROOT}/hub/models--boltzgen--boltzgen-1/snapshots" "${SOFTWARE_ROOT}"; do
-        [[ -d "${root}" ]] || continue
-        find -L "${root}" -type f \( -iname '*ifold*.ckpt' -o -iname '*diverse*.ckpt' -o -iname '*.safetensors' \) -print 2>/dev/null | sort -u | while read -r file; do
-            hash_one "${file}"
-        done
-    done
-} >"${BUNDLE}/model_and_container_sha256.txt" 2>&1
-
-{
-    if [[ -d "${MOLDIR}" ]]; then
-        find -L "${MOLDIR}" -maxdepth 4 -type f -print 2>/dev/null | sort | while read -r file; do
+    root="${HF_HOME_ROOT}/hub/models--boltzgen--boltzgen-1/snapshots"
+    if [[ -d "${root}" ]]; then
+        find -L "${root}" -maxdepth 6 -type f \( -iname '*ifold*.ckpt' -o -iname '*diverse*.ckpt' -o -iname '*.safetensors' \) -print 2>/dev/null | sort -u | while read -r file; do
             hash_one "${file}"
         done
     fi
-} >"${BUNDLE}/moldir_manifest_sha256.txt" 2>&1
+    find -L "${SOFTWARE_ROOT}" -maxdepth 2 -type f \( -iname '*ifold*.ckpt' -o -iname '*diverse*.ckpt' -o -iname '*.safetensors' \) -print 2>/dev/null | sort -u | while read -r file; do
+        hash_one "${file}"
+    done
+} >"${BUNDLE}/model_and_container_sha256.txt" 2>&1
 
+capture moldir_inventory.txt bash -c 'echo "MOLDIR='$MOLDIR'"; if [[ -d "'$MOLDIR'" ]]; then ls -ld "'$MOLDIR'"; find -L "'$MOLDIR'" -maxdepth 2 -type f -printf "%s\t%TY-%Tm-%TdT%TH:%TM:%TS\t%p\n" 2>/dev/null | head -n 500; else echo MISSING; fi'
+
+step "Collecting small configuration snapshots and bounded project evidence"
 for path in \
     "${PROJECT_ROOT}/inputs/9ULZ.yaml" \
     "${PROJECT_ROOT}/inputs/9ULZ.cif" \
@@ -154,13 +159,14 @@ for path in \
     copy_snapshot "${path}"
 done
 
-capture project_file_manifest.txt bash -c 'find "'$PROJECT_ROOT'" -maxdepth 3 -type f -printf "%TY-%Tm-%TdT%TH:%TM:%TS\t%s\t%p\n" 2>/dev/null | sort'
+capture project_file_manifest.txt bash -c 'find "'$PROJECT_ROOT'" -maxdepth 3 \( -path "'$PROJECT_ROOT'/outputs" -o -path "'$PROJECT_ROOT'/provenance" -o -path "'$PROJECT_ROOT'/logs" \) -prune -o -type f -printf "%TY-%Tm-%TdT%TH:%TM:%TS\t%s\t%p\n" 2>/dev/null | sort | head -n 20000'
 capture output_counts.txt bash -c '
 for d in "'$PROJECT_ROOT'/outputs/hIAPP_batch1" "'$PROJECT_ROOT'/outputs/hIAPP_batch1_ifold"; do
-  echo "DIRECTORY=$d"; if [[ -d "$d" ]]; then find "$d" -type f | awk -F. "{ext=tolower(\$NF); count[ext]++} END{for(e in count) print e,count[e]}" | sort; du -sh "$d"; else echo MISSING; fi; echo; done'
-capture relevant_log_lines.txt bash -c 'find "'$PROJECT_ROOT'/logs" -maxdepth 1 -type f -name "*.log" -print0 2>/dev/null | xargs -0 -r grep -HEn "BoltzGen version|CHECKPOINT|MOLDIR|NUM_DESIGNS|DIFFUSION|TEMPERATURE|CUDA|GPU|SLURM_JOB_ID|error|warning" 2>/dev/null | head -n 10000 || true'
-capture seed_scan.txt bash -c 'grep -RInE "random.seed|manual_seed|seed[=: ]" "'$PROJECT_ROOT'" "'$SOFTWARE_ROOT'/test" --include="*.sh" --include="*.py" --include="*.yaml" --include="*.yml" 2>/dev/null | head -n 5000 || true'
+  echo "DIRECTORY=$d"; if [[ -d "$d" ]]; then printf "immediate_files="; find "$d" -maxdepth 1 -type f | wc -l; printf "immediate_directories="; find "$d" -mindepth 1 -maxdepth 1 -type d | wc -l; else echo MISSING; fi; echo; done'
+capture relevant_log_lines.txt bash -c 'find "'$PROJECT_ROOT'/logs" -maxdepth 1 -type f -name "*.log" -printf "%T@ %p\n" 2>/dev/null | sort -nr | head -n 200 | cut -d" " -f2- | tr "\n" "\0" | xargs -0 -r grep -HEn "BoltzGen version|CHECKPOINT|MOLDIR|NUM_DESIGNS|DIFFUSION|TEMPERATURE|CUDA|GPU|SLURM_JOB_ID|error|warning" 2>/dev/null | head -n 10000 || true'
+capture seed_scan.txt bash -c 'find "'$PROJECT_ROOT'" "'$SOFTWARE_ROOT'/test" -maxdepth 2 -type f \( -name "*.sh" -o -name "*.py" -o -name "*.yaml" -o -name "*.yml" \) -print0 2>/dev/null | xargs -0 -r grep -HnE "random.seed|manual_seed|seed[=: ]" 2>/dev/null | head -n 5000 || true'
 
+step "Building the provenance archive"
 find "${BUNDLE}" -type f ! -name MANIFEST.sha256 -print0 | LC_ALL=C sort -z | xargs -0 -r sha256sum >"${BUNDLE}/MANIFEST.sha256"
 ARCHIVE="${BUNDLE}.tar.gz"
 tar -C "${PROVENANCE_ROOT}" -czf "${ARCHIVE}" "$(basename "${BUNDLE}")"

@@ -5,7 +5,7 @@
 #SBATCH --job-name=prov_boltz2
 #SBATCH --partition=gpu_4090
 #SBATCH --gpus=1
-#SBATCH --time=01:00:00
+#SBATCH --time=02:00:00
 #SBATCH --output=provenance_boltz2_%j.log
 #SBATCH --error=provenance_boltz2_%j.log
 
@@ -69,6 +69,10 @@ hash_one() {
     fi
 }
 
+step() {
+    printf '[%s] %s\n' "$(date -u +%Y-%m-%dT%H:%M:%SZ)" "$*"
+}
+
 if [[ -r /etc/profile.d/modules.sh ]]; then
     # shellcheck disable=SC1091
     source /etc/profile.d/modules.sh
@@ -87,6 +91,7 @@ It does not contain model weights, predicted structures, shell history, tokens, 
 Review the bundle before external publication because hostnames and account paths are preserved for provenance.
 EOF
 
+step "Collecting system, Slurm, GPU, and CUDA metadata"
 capture system_identity.txt bash -c 'date -u; date; hostname; id; pwd; uname -a; cat /etc/os-release 2>/dev/null; lscpu; free -h'
 capture slurm_environment.txt bash -c 'env | LC_ALL=C sort | grep -E "^(SLURM_|CUDA_VISIBLE_DEVICES=|CONDA_DEFAULT_ENV=|CONDA_PREFIX=)" || true; for n in http_proxy https_proxy HF_ENDPOINT; do [[ -n "${!n:-}" ]] && echo "$n=SET" || echo "$n=UNSET"; done'
 capture slurm_job.txt scontrol show job "${SLURM_JOB_ID}"
@@ -99,6 +104,7 @@ capture nvidia_query.csv nvidia-smi --query-gpu=index,name,uuid,driver_version,v
 capture cuda_compiler.txt bash -c 'nvcc --version 2>/dev/null || true; ldconfig -p 2>/dev/null | grep -E "libcuda|libcudnn" | head -n 100 || true'
 capture module_state.txt bash -lc 'source /etc/profile.d/modules.sh 2>/dev/null || true; module list 2>&1 || true; module show cuda/12.8 2>&1 || true'
 
+step "Collecting the active Boltz/Conda environment"
 capture boltz_version.txt bash -c 'boltz --version 2>&1 || true; python -c "import importlib.metadata as m; print(m.version(\"boltz\"))"'
 capture boltz_predict_help.txt boltz predict --help
 capture python_runtime.txt python -c 'import importlib.metadata as m, platform, sys; print("python", sys.version); print("platform", platform.platform()); names=["boltz","torch","numpy","pandas","rdkit","jax","lightning","pytorch-lightning"]; installed={d.metadata.get("Name","").lower():d.version for d in m.distributions()}; [print(n,installed.get(n,"NOT_INSTALLED")) for n in names]'
@@ -110,29 +116,28 @@ capture conda_explicit.txt conda list --explicit
 capture conda_environment.yml conda env export --no-builds
 capture boltz_module_path.txt python -c 'import boltz, inspect; print(boltz.__file__); print(inspect.getfile(boltz))'
 
+step "Collecting installed Boltz source and MSA-server implementation clues"
 BOLTZ_PACKAGE_ROOT="$(python -c 'import pathlib, boltz; print(pathlib.Path(boltz.__file__).resolve().parent)' 2>/dev/null || true)"
 if [[ -n "${BOLTZ_PACKAGE_ROOT}" && -d "${BOLTZ_PACKAGE_ROOT}" ]]; then
     capture msa_server_source_scan.txt bash -c 'grep -RInE "msa.server|msa_server|colabfold|mmseqs|api_url|endpoint" "'$BOLTZ_PACKAGE_ROOT'" --include="*.py" --include="*.yaml" --include="*.yml" 2>/dev/null | head -n 5000 || true'
     capture installed_boltz_source_manifest.txt bash -c 'find "'$BOLTZ_PACKAGE_ROOT'" -type f -name "*.py" -print0 | LC_ALL=C sort -z | xargs -0 -r sha256sum'
 fi
 
+step "Collecting project revision and targeted checkpoint hashes"
 capture git_repositories.txt bash -c '
-for root in "'$PROJECT_ROOT'" "${CONDA_PREFIX:-}"; do
-  [[ -d "$root" ]] || continue
-  find "$root" -maxdepth 5 -type d -name .git -print 2>/dev/null | sort | while read -r dotgit; do
-    repo=${dotgit%/.git}; echo "REPOSITORY=$repo"; git -C "$repo" rev-parse HEAD 2>/dev/null || true; git -C "$repo" describe --always --dirty --tags 2>/dev/null || true; git -C "$repo" remote -v 2>/dev/null || true; git -C "$repo" status --short 2>/dev/null || true; echo; done
-done'
+repo="'$PROJECT_ROOT'"; echo "REPOSITORY_CANDIDATE=$repo"; git -C "$repo" rev-parse HEAD 2>/dev/null || true; git -C "$repo" describe --always --dirty --tags 2>/dev/null || true; git -C "$repo" remote -v 2>/dev/null || true; git -C "$repo" status --short 2>/dev/null || true'
 
 {
     for root in "${BOLTZ_CACHE}" "${LEGACY_BOLTZ_CACHE}"; do
         echo "CACHE_ROOT=${root}"
         [[ -d "${root}" ]] || { echo MISSING; echo; continue; }
-        find -L "${root}" -type f \( -iname '*.ckpt' -o -iname '*.pt' -o -iname '*.pth' -o -iname '*.safetensors' -o -size +100M \) -print 2>/dev/null | sort -u | while read -r file; do
+        find -L "${root}" -maxdepth 7 -type f \( -iname '*.ckpt' -o -iname '*.pt' -o -iname '*.pth' -o -iname '*.safetensors' \) -print 2>/dev/null | sort -u | while read -r file; do
             hash_one "${file}"
         done
     done
 } >"${BUNDLE}/model_cache_sha256.txt" 2>&1
 
+step "Collecting small configuration snapshots and bounded project evidence"
 for path in \
     "${PROJECT_ROOT}/run_lig_one_large.sh" \
     "${PROJECT_ROOT}/run_lig_array_large.sh" \
@@ -148,12 +153,13 @@ for path in \
     copy_snapshot "${path}"
 done
 
-capture project_file_manifest.txt bash -c 'find "'$PROJECT_ROOT'" -maxdepth 3 -type f -printf "%TY-%Tm-%TdT%TH:%TM:%TS\t%s\t%p\n" 2>/dev/null | sort'
+capture project_file_manifest.txt bash -c 'find "'$PROJECT_ROOT'" -maxdepth 3 \( -path "'$PROJECT_ROOT'/outputs" -o -path "'$PROJECT_ROOT'/tmp" -o -path "'$PROJECT_ROOT'/provenance" -o -path "'$PROJECT_ROOT'/input/*_yaml" \) -prune -o -type f -printf "%TY-%Tm-%TdT%TH:%TM:%TS\t%s\t%p\n" 2>/dev/null | sort | head -n 20000'
 capture yaml_batch_counts.txt bash -c 'for d in "'$PROJECT_ROOT'"/input/*yaml*; do [[ -d "$d" ]] || continue; printf "%s\t" "$d"; find "$d" -maxdepth 1 -type f \( -name "*.yaml" -o -name "*.yml" \) | wc -l; done'
-capture output_counts.txt bash -c 'echo "OUTPUT_ROOT='$PROJECT_ROOT'/outputs"; if [[ -d "'$PROJECT_ROOT'/outputs" ]]; then printf "task_directories="; find "'$PROJECT_ROOT'/outputs" -mindepth 1 -maxdepth 1 -type d | wc -l; printf "model0_cif="; find "'$PROJECT_ROOT'/outputs" -type f -name "*_model_0.cif" | wc -l; du -sh "'$PROJECT_ROOT'/outputs"; else echo MISSING; fi'
-capture relevant_log_lines.txt bash -c 'find "'$PROJECT_ROOT'/log" -maxdepth 1 -type f -name "*.log" -print0 2>/dev/null | xargs -0 -r grep -HEn "MODE=|YAML_PATH=|OUTDIR=|CACHEDIR=|Boltz|version|diffusion_samples|msa.server|msa_server|CUDA|GPU|SLURM_JOB_ID|exit_code|error|warning" 2>/dev/null | head -n 15000 || true'
-capture seed_scan.txt bash -c 'grep -RInE "random.seed|manual_seed|seed[=: ]" "'$PROJECT_ROOT'" --include="*.sh" --include="*.py" --include="*.yaml" --include="*.yml" 2>/dev/null | head -n 5000 || true'
+capture output_counts.txt bash -c 'echo "OUTPUT_ROOT='$PROJECT_ROOT'/outputs"; if [[ -d "'$PROJECT_ROOT'/outputs" ]]; then printf "task_directories="; find "'$PROJECT_ROOT'/outputs" -mindepth 1 -maxdepth 1 -type d | wc -l; else echo MISSING; fi'
+capture relevant_log_lines.txt bash -c 'find "'$PROJECT_ROOT'/log" -maxdepth 1 -type f -name "*.log" -printf "%T@ %p\n" 2>/dev/null | sort -nr | head -n 200 | cut -d" " -f2- | tr "\n" "\0" | xargs -0 -r grep -HEn "MODE=|YAML_PATH=|OUTDIR=|CACHEDIR=|Boltz|version|diffusion_samples|msa.server|msa_server|CUDA|GPU|SLURM_JOB_ID|exit_code|error|warning" 2>/dev/null | head -n 15000 || true'
+capture seed_scan.txt bash -c 'find "'$PROJECT_ROOT'" -maxdepth 2 -type f \( -name "*.sh" -o -name "*.py" -o -name "*.yaml" -o -name "*.yml" \) -print0 2>/dev/null | xargs -0 -r grep -HnE "random.seed|manual_seed|seed[=: ]" 2>/dev/null | head -n 5000 || true'
 
+step "Building the provenance archive"
 find "${BUNDLE}" -type f ! -name MANIFEST.sha256 -print0 | LC_ALL=C sort -z | xargs -0 -r sha256sum >"${BUNDLE}/MANIFEST.sha256"
 ARCHIVE="${BUNDLE}.tar.gz"
 tar -C "${PROVENANCE_ROOT}" -czf "${ARCHIVE}" "$(basename "${BUNDLE}")"
