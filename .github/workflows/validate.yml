@@ -20,7 +20,7 @@ jobs:
           ! grep -rPn '[\x{3400}-\x{9FFF}\x{3040}-\x{30FF}\x{AC00}-\x{D7AF}]'
           --include='*.md' --include='*.py' --include='*.sh' --include='*.slurm'
           --include='*.yaml' --include='*.yml' --include='*.csv' --include='*.ipynb'
-          --exclude='README_CN.md' .
+          --exclude='README.md' --exclude='README_CN.md' .
       - run: python scripts/screen_candidates.py data/scored/merged_all_2_scored.csv results/screening
       - run: bash run.sh --output-dir /tmp/competition-submission
       - run: >-
