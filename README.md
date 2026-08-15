@@ -4,6 +4,22 @@
 [![Python 3.11+](https://img.shields.io/badge/Python-3.11%2B-3776AB?logo=python&logoColor=white)](https://www.python.org/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
+## 中文评审快速入口
+
+本仓库是第一届全球大学生生命科学挑战赛 Track 1 的公开代码与可复现性材料。
+项目提供一套通用的 D-肽从头设计与多指标筛选流程，并以 hIAPP 为案例筛选出
+12 条候选 D-肽。
+
+- **一键复现筛选：** 运行 `bash run.sh`，生成标准化的 12 条候选结果。
+- **查看完整计算流程：** [BoltzGen → BoltzIF → Boltz-2 → 多指标筛选 Notebook](notebooks/00_full_generation_to_selection.ipynb)。
+- **查看最终材料：** [结果 CSV](results/submission/results.csv) · [结果 Excel](results/submission/results.xlsx) · [预测复合物结构](results/final_candidates/structures/)。
+- **核对竞赛要求：** [附件5合规表](docs/COMPETITION_COMPLIANCE.md) · [赛道评分对照](docs/SCORING_ALIGNMENT.md) · [Model Card](MODEL_CARD.md)。
+
+湿实验正在进行，本公开版本不把计算分数表述为实测活性。更多说明见
+[中文评审导航](README_CN.md)。
+
+---
+
 **Official public code and reproducibility package for Track 1 of the First
 Global University Student Life Science Challenge.**
 
