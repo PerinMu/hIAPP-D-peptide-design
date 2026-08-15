@@ -17,8 +17,9 @@ jupyter nbconvert --to notebook --execute notebooks/01_reproduce_screening.ipynb
   --ExecutePreprocessor.timeout=600
 ```
 
-All repository-facing prose, notebook text, user-visible code messages, and
-data annotations must remain in English. Scientific notation such as Greek
-letters may be retained when it is part of a molecule or method name. Update
+Repository-facing prose, notebook text, user-visible code messages, and data
+annotations must remain in English, except for the concise evaluator navigation
+in `README_CN.md`. Scientific notation such as Greek letters may be retained
+when it is part of a molecule or method name. Update
 `data/designs/reference_inhibitor_sources.csv` whenever the reference set
 changes, and ensure that every usable reference ID remains covered exactly.
