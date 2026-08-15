@@ -40,3 +40,9 @@ SHA-256 sidecar under the project's `provenance/` directory. The collectors do
 not read shell history, copy predicted structures, or export credentials. Review
 the archive before publication because account paths and compute-node hostnames
 are retained as provenance evidence.
+
+The August 2026 recovery bundles were verified locally and distilled into the
+credential-free [`production environment record`](../docs/PRODUCTION_ENVIRONMENT.md)
+and sanitized dependency snapshots under [`environments/`](../environments/).
+Raw collector archives, checksum sidecars, and logs are intentionally ignored by
+Git and must not be uploaded without a separate privacy review.

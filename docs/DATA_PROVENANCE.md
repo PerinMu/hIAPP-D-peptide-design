@@ -8,7 +8,7 @@
 | BoltzGen design table | Generated during the 2026-08-03 campaign from the committed input YAML | Initial candidate sequences | Project-generated model output; input and parameters committed |
 | BoltzIF redesign table | Generated during the 2026-08-04 campaign | Backbone-conditioned sequence diversification | Project-generated model output; parameters committed |
 | Boltz-2 score table | Generated 2026-08-04 to 2026-08-08, including retry batches | Complex-confidence and relative affinity signals | Project-generated model output; collection and retry scripts committed |
-| Automatic MSA input | Requested through Boltz `--use_msa_server` during the prediction window | hIAPP target alignment context | Upstream Boltz documentation cites ColabFold; exact endpoint/version and returned alignment archive were not retained |
+| Automatic MSA input | Requested through Boltz `--use_msa_server` during the prediction window | hIAPP target alignment context | Installed Boltz 2.2.1 default: `https://api.colabfold.com`; service version, request log, and returned alignment archive were not retained |
 | Reference inhibitor set | Literature/source workbook, mapped to 76 English source records | Descriptor-space context for P3 novelty only | Row-group source status and DOI verification flags are committed; original papers remain authoritative |
 | Final 12 manifest and mmCIF files | Project screening and manual structure review | Experimental shortlist | Project-generated results; all values are computational unless explicitly labeled otherwise |
 
@@ -54,14 +54,16 @@ policies are described by their authors.
 - Possible overlap between external pretrained-model corpora and PDB 9ULZ or
   related hIAPP structures cannot be independently excluded. This is an
   external-model limitation, not evidence of project data leakage.
-- The automatic MSA service was a third-party runtime dependency. Its request
-  details are partially recoverable from the command flag and YAML input, but
-  the server version and response archive are unavailable.
+- The automatic MSA service was a third-party runtime dependency. Production
+  commands used `--use_msa_server` without a URL override; the recovered Boltz
+  2.2.1 source default is `https://api.colabfold.com`. The service-side version,
+  request log, and returned alignment archive are unavailable.
 
 ## Integrity controls
 
 `run.sh` records SHA256 checksums for its scored input, final-review manifest,
-and generated `results.csv`. New stochastic inference campaigns should use new
-versioned output directories and capture package versions, model revisions,
-checkpoint hashes, random seeds, GPU/driver details, and scheduler logs before
-analysis.
+and generated `results.csv`. The recovered model and container hashes are listed
+in [`PRODUCTION_ENVIRONMENT.md`](PRODUCTION_ENVIRONMENT.md). New stochastic
+inference campaigns should use new versioned output directories and capture
+package versions, model revisions, checkpoint hashes, random seeds, GPU/driver
+details, and scheduler logs before analysis.

@@ -11,6 +11,7 @@ tmp/
 dispatch_state/
 *.log
 *.tar.gz
+*.tar.gz.sha256
 *.zip
 data/intermediate/backbones/
 data/intermediate/inverse_folding_structures/

@@ -31,3 +31,6 @@ is polymer chain A and the stereochemical peptide ligand is non-polymer chain X.
 The deposited predictions contain heavy atoms only, with no explicit hydrogens;
 the protonation state is therefore reported as `not assigned`. The
 target-template and intended-region columns document the hIAPP input context.
+The model field records BoltzGen/BoltzIF 0.2.0 and the recovered Boltz 2.2.1
+environment; checkpoint hashes and the evidence boundary are documented in the
+Model Card and `docs/PRODUCTION_ENVIRONMENT.md`.

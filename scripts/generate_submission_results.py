@@ -20,8 +20,8 @@ from screen_candidates import compute_scores
 
 TRACK = "Track 1 - AI Macromolecule and Peptide Drug Design"
 MODEL_VERSION = (
-    "BoltzGen 1 (boltzgen1_diverse.ckpt); BoltzIF (boltzgen1_ifold.ckpt); "
-    "Boltz-2 (production package revision not archived)"
+    "BoltzGen/BoltzIF 0.2.0; Boltz-2 2.2.1 "
+    "(production environment recovered 2026-08-15)"
 )
 TARGET_SEQUENCE = "HSSNNFGAILSSTNVGSNTY"
 
@@ -184,8 +184,10 @@ def main() -> None:
         "track": TRACK,
         "model_and_version": MODEL_VERSION,
         "production_model_version_caveat": (
-            "Exact package revisions and checkpoint SHA256 values were not archived during the "
-            "August 2026 production campaign; see MODEL_CARD.md."
+            "BoltzGen 0.2.0 is confirmed by the historical inverse-folding log. "
+            "Boltz 2.2.1 is the still-installed environment recovered on 2026-08-15; "
+            "historical prediction logs did not print its version. Checkpoint SHA256 values "
+            "and remaining evidence are recorded in MODEL_CARD.md."
         ),
         "inputs": {
             str(args.scores): sha256(args.scores),

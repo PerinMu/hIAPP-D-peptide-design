@@ -250,14 +250,19 @@ boltz predict --help
 Production generation and prediction require a CUDA-capable NVIDIA GPU. The
 repository provides Slurm templates for multi-job execution and retry recovery.
 
-The recorded production environment used an Ubuntu 22.04 CUDA 12.4.1 cuDNN
-container for BoltzGen, CUDA 12.8 for Boltz-2, four requested GPUs for
-BoltzGen/BoltzIF, and one GPU per Boltz-2 job with up to eight concurrent jobs.
-The Boltz-2 jobs used a Slurm partition named `gpu_4090`; the exact node GPU,
-driver, package revisions, checkpoint hashes, and stochastic seeds were not
-archived. This historical provenance gap is disclosed in the
-[Model Card](MODEL_CARD.md), together with commands that capture it for future
-runs. No missing version is silently inferred.
+The recovered production stack identifies `boltzgen` 0.2.0 and a still-installed
+`boltz` 2.2.1 environment. BoltzGen used a hashed Ubuntu 22.04 CUDA 12.4.1/cuDNN
+9.1 Singularity image; Boltz-2 used CUDA 12.8 and RTX 4090 jobs. Generation and
+inverse folding requested four GPUs, while prediction used one GPU per job with
+up to eight concurrent jobs. Exact checkpoint and container hashes, dependency
+snapshots, hardware distinctions, scheduler evidence, and the remaining seed
+and service-version limitations are documented in the [Model Card](MODEL_CARD.md)
+and [production environment record](docs/PRODUCTION_ENVIRONMENT.md). No missing
+value is silently inferred.
+
+Sanitized full package snapshots are committed as
+[`environments/boltzgen-production-pip-freeze.txt`](environments/boltzgen-production-pip-freeze.txt)
+and [`environments/boltz2-production-pip-freeze.txt`](environments/boltz2-production-pip-freeze.txt).
 
 ### 4. Model downloads and caches
 

@@ -6,16 +6,16 @@ Requirements* for the First Global University Student Life Science Challenge.
 | Requirement | Repository evidence | Status |
 |---|---|---|
 | Commented algorithm source and complete commands | `scripts/`, `hpc/`, `README.md`, full workflow notebook | Complete |
-| Dependencies and interpreter/OS/CUDA/hardware disclosure | `requirements.txt`, `environment.yml`, `README.md`, `MODEL_CARD.md` | Complete; original model package revisions are disclosed as unavailable |
+| Dependencies and interpreter/OS/CUDA/hardware disclosure | `requirements.txt`, `environment.yml`, `environments/`, `README.md`, `MODEL_CARD.md` | Complete; recovered production evidence and remaining distinctions are explicit |
 | Model weights or invocation route | Official download commands and checkpoint names in README/notebook; weights not redistributed | Complete for third-party pretrained models |
 | Full design -> optimization -> prediction/screening example | `notebooks/00_full_generation_to_selection.ipynb` | Complete |
 | One-command main entry point | `bash run.sh` | Complete |
 | Training entry, split, logs, and trained weights | Not applicable: no model was trained or fine-tuned by the team | Explicitly documented |
 | Executable Notebook | Full GPU workflow and CPU screening-reproduction notebooks | Complete |
 | Data source, preprocessing, licensing, and leakage controls | `docs/DATA_PROVENANCE.md` and `docs/REPRODUCIBILITY.md` | Complete |
-| Model structure, parameters, hardware, time, scope, I/O, limitations | `MODEL_CARD.md`, `docs/METHODS.md`, notebook | Complete, with historical provenance caveat |
+| Model structure, parameters, hardware, time, scope, I/O, limitations | `MODEL_CARD.md`, `docs/PRODUCTION_ENVIRONMENT.md`, `docs/METHODS.md`, notebook | Complete, with recovered-vs-historical evidence distinguished |
 | Prediction results, ranking logic, and uncertainty | `results/`, `docs/METHODS.md`, `MODEL_CARD.md` | Complete |
-| Third-party names, versions, parameters, source, and license | `MODEL_CARD.md`, `docs/REFERENCES.md`, README | Complete, except exact production package revisions were not archived and are not fabricated |
+| Third-party names, versions, parameters, source, and license | `MODEL_CARD.md`, `docs/PRODUCTION_ENVIRONMENT.md`, `docs/REFERENCES.md`, README | Complete; BoltzGen 0.2.0 is historically confirmed and Boltz 2.2.1 is explicitly labeled as recovered |
 | Standard final candidate file | `results/submission/results.csv` and convenience mirror `results.xlsx` | Complete |
 | Structure filenames and files | `structure_file` column and `results/final_candidates/structures/` | Complete |
 | Relative paths/configuration and fixed deterministic processing | `run.sh`, `scripts/`, `hpc/`, notebooks | Complete |

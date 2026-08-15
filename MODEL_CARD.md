@@ -17,10 +17,10 @@ standardized 12-candidate submission manifest.
 
 | Component | Role | Production configuration | Source and license |
 |---|---|---|---|
-| BoltzGen 1 | Target-conditioned all-atom sequence–structure generation | `peptide-anything`, design step, 2,000 requested designs, diffusion batch size 10, `boltzgen1_diverse.ckpt` | [Official repository](https://github.com/HannesStark/boltzgen), MIT License |
-| BoltzIF | Backbone-conditioned sequence redesign | Four sequences per backbone, temperature 0.2, cysteine excluded, `boltzgen1_ifold.ckpt` | Distributed through the BoltzGen project, MIT License |
-| Boltz-2 | Complex prediction and relative ranking signals | Explicit D-peptide SMILES, three diffusion samples, MSA server, potentials, model-0 structures retained | [Official repository](https://github.com/jwohlwend/boltz), MIT License |
-| Automatic MSA generation | Target-sequence alignment input requested with `--use_msa_server` | Used during Boltz-2 jobs from 2026-08-04 to 2026-08-08; upstream Boltz documentation cites ColabFold | [ColabFold paper](https://doi.org/10.1038/s41592-022-01488-1) |
+| BoltzGen 1 (`boltzgen` 0.2.0) | Target-conditioned all-atom sequence–structure generation | `peptide-anything`, design step, 2,000 requested designs, diffusion batch size 10, `boltzgen1_diverse.ckpt` | [Official repository](https://github.com/HannesStark/boltzgen), MIT License |
+| BoltzIF (`boltzgen` 0.2.0) | Backbone-conditioned sequence redesign | Four sequences per backbone, temperature 0.2, cysteine excluded, `boltzgen1_ifold.ckpt` | Distributed through the BoltzGen project, MIT License |
+| Boltz-2 (`boltz` 2.2.1, recovered environment) | Complex prediction and relative ranking signals | Explicit D-peptide SMILES, three diffusion samples, MSA server, potentials, model-0 structures retained | [Official repository](https://github.com/jwohlwend/boltz), MIT License |
+| Automatic MSA generation | Target-sequence alignment input requested with `--use_msa_server` | The installed Boltz 2.2.1 default was `https://api.colabfold.com`; no URL override appears in the production command | [ColabFold paper](https://doi.org/10.1038/s41592-022-01488-1) |
 | Project scoring code | Physicochemical descriptors and P1–P4 prioritization | Deterministic percentile scores and documented heuristic weights | This repository, MIT License |
 
 Model weights are not redistributed. The full notebook follows the official
@@ -28,26 +28,49 @@ installation/download routes and records the required invocation parameters.
 
 ## Production-version record
 
-The August 2026 campaign preserved model names, checkpoint filenames, YAML
-inputs, command-line parameters, CUDA container/module choices, score tables,
-and predicted structures. It did **not** preserve the exact BoltzGen/Boltz
-package versions, Git revisions, checkpoint SHA256 values, NVIDIA driver, or GPU
-model reported by `nvidia-smi`. The specific MSA-server endpoint/version,
-request log, and returned alignment archives were also not retained.
+On 2026-08-15, the still-present cloud environments, checkpoints, command
+scripts, scheduler history, and selected historical logs were collected with
+the read-only scripts in `hpc/`. Both provenance archives and all 75 internal
+files passed SHA256 verification. Raw bundles remain private because they
+contain account paths and compute-node names; the credential-free facts and
+bundle checksums are recorded in
+[`docs/PRODUCTION_ENVIRONMENT.md`](docs/PRODUCTION_ENVIRONMENT.md).
 
-Recorded environment evidence is:
+Recovered evidence is:
 
-- BoltzGen: Ubuntu 22.04 CUDA 12.4.1 cuDNN development container;
-- Boltz-2: CUDA 12.8 module and the Slurm partition named `gpu_4090`;
-- generation: four GPUs requested for BoltzGen and BoltzIF;
-- prediction: one GPU per Boltz-2 job, with up to eight concurrent jobs;
-- recorded prediction throughput: approximately 128 candidates/hour at the
-  campaign level, excluding queueing, interruptions, and retries.
+- the historical BoltzIF log explicitly reports `boltzgen 0.2.0`;
+- the still-installed prediction environment reports `boltz 2.2.1`; prediction
+  logs did not print the package version, so this is labeled as a recovered
+  environment snapshot rather than an immutable per-job version record;
+- `boltzgen1_diverse.ckpt` SHA256:
+  `360af8bd6e59527ff6ec25dd81253967f3bd3567d200053b10680634751f8e3c`;
+- `boltzgen1_ifold.ckpt` SHA256:
+  `dd4cf108c94471bdc3a326b7b180fa3854dc019110fae780208c30b50bd56578`;
+- `boltz2_conf.ckpt` SHA256:
+  `090e82ac8c92f5e943fa1b39e7410a44027bea7243c0bbb3caa67a77fc1428e1`;
+- `boltz2_aff.ckpt` SHA256:
+  `dcc5cd3722b1c9eaa34267e4ae32f55cbbf1963f4c19319381ccfa30fdd2ca9e`;
+- BoltzGen used a CUDA 12.4.1/cuDNN 9.1 Ubuntu 22.04 Singularity
+  image; its SHA256 is
+  `723659cab39561f553844c4074c8ec93e176908bc408b4e9d3b2dbe74c48124f`;
+- Boltz-2 used CUDA 12.8, PyTorch 2.10.0+cu128, and RTX 4090 jobs;
+- generation and inverse folding requested four GPUs; prediction used one RTX
+  4090, six CPU cores, and 60 GB RAM per job, with up to eight concurrent jobs;
+- scheduler history for the campaign window contains 10,322 `boltz_arr`
+  allocations: 9,788 completed and 534 failed, totaling 459.26 allocated GPU
+  hours before output-level recovery and deduplication;
+- campaign-level observed throughput was approximately 128 candidates/hour,
+  excluding queueing, interruptions, and retries.
 
-Because the exact package revisions are not recoverable from the deposited
-records, the standardized result file labels this field explicitly rather than
-inventing a version. Future campaigns should capture the following before
-inference:
+The upstream source Git revisions and production stochastic seeds remain
+unavailable: the models were installed as packages and the production commands
+did not set or log a seed. The BoltzGen collection node exposed an RTX 3090 on
+the same `gpu` partition, but the exact GPU model of the historical four-GPU
+jobs was not printed and is not inferred. The MSA endpoint default is
+recoverable; its service-side version, request log, and returned alignments are
+not.
+
+Future campaigns should capture the following before inference:
 
 ```bash
 boltzgen --version
@@ -108,14 +131,16 @@ dissociation constants, or experimental effect sizes.
   used only as relative ranking signals.
 - External model training-data overlap with PDB 9ULZ or related amyloid
   structures cannot be independently audited by this project.
-- Automatic MSA generation depended on an external server, but its endpoint
-  version and returned alignment archive were not deposited.
+- Automatic MSA generation used the installed Boltz default
+  `https://api.colabfold.com`; its service-side version and returned alignment
+  archive were not deposited.
 - Physicochemical composite scores are transparent project heuristics, not
   experimentally calibrated predictors.
 - Manual structure review introduces expert judgment; review-stage provenance is
   retained, but a new stochastic generation run requires a new review.
-- No measured hIAPP aggregation-inhibition value is included in the current
-  public release. Model scores must not be presented as wet-lab activity.
+- Wet-lab validation is in progress, but no measured hIAPP
+  aggregation-inhibition value is included in the current public release.
+  Model scores must not be presented as wet-lab activity.
 
 ## Data, leakage, and experimental boundary
 
