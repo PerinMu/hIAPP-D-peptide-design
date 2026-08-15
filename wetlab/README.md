@@ -1,7 +1,8 @@
 # Wet-lab data area
 
-The computational shortlist is complete; wet-lab data have not yet been added.
-Do not replace this statement with inferred or model-predicted activity.
+The computational shortlist is complete and wet-lab validation is in progress.
+No wet-lab measurements are included in this release. Do not replace this
+statement with inferred or model-predicted activity.
 
 Recommended raw table layout is provided in `raw/README.md`. A defensible assay
 package should include:
@@ -18,4 +19,3 @@ package should include:
 
 Store immutable measurements in `wetlab/raw/`, tidy processed tables in
 `wetlab/processed/`, and plots/statistical output in `wetlab/results/`.
-

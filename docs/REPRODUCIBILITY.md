@@ -1,5 +1,18 @@
 # Reproducibility and data lineage
 
+## One-command evaluator reproduction
+
+```bash
+conda env create -f environment.yml
+conda activate hiapp-d-peptide-analysis
+bash run.sh
+```
+
+This deterministic CPU entry point regenerates the screening tables and the
+standardized `results/submission/results.csv`. It also writes runtime metadata
+and SHA256 hashes. Neural design and prediction are separate stochastic GPU
+stages documented in `notebooks/00_full_generation_to_selection.ipynb`.
+
 ## Count reconciliation
 
 | Stage | Rows / designs | Unique / usable | Evidence in repository |
@@ -44,6 +57,19 @@ versioned release or deposit them in a data repository and record checksums plus
 a permanent URL.
 
 ## Software and checkpoint provenance
+
+Read-only recovery on 2026-08-15 verified the model environments, four
+checkpoint hashes, the BoltzGen container hash, current GPU/CUDA stacks,
+scheduler history, and production commands. The sanitized record is
+[`PRODUCTION_ENVIRONMENT.md`](PRODUCTION_ENVIRONMENT.md), and full package
+snapshots are under `environments/`. BoltzGen 0.2.0 is confirmed in a historical
+job log; Boltz 2.2.1 is the still-installed environment and is labeled as
+recovered because historical prediction logs did not print its version.
+
+Upstream source Git revisions, production stochastic seeds, the exact GPU model
+for the historical BoltzGen nodes, the MSA service-side version, and returned
+alignment archives remain unavailable. The commands below are mandatory capture
+steps for future campaigns.
 
 For each independent generation or prediction run, record the exact software
 environment, source revision, and checkpoint checksum alongside the results:

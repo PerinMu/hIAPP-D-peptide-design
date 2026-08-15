@@ -47,6 +47,8 @@ and assay plan.
 
 | Resource | What it provides |
 |---|---|
+| **[`run.sh`](run.sh)** | Competition evaluator entry point: one CPU command reproduces screening and writes the standardized 12-candidate `results.csv`. |
+| **[Model Card](MODEL_CARD.md)** | Third-party model provenance, production configuration, hardware, scope, inputs/outputs, uncertainty, and known limitations. |
 | **[Scientific background and innovation](docs/BACKGROUND.md)** | D-peptide rationale, comparison with established discovery routes, framework scope, and evidence boundaries. |
 | **[Full design-to-selection notebook](notebooks/00_full_generation_to_selection.ipynb)** | Step-by-step BoltzGen generation, BoltzIF redesign, Boltz-2 prediction, retry handling, score collection, screening, and structure review on a Slurm GPU server. |
 | **[Screening reproduction notebook](notebooks/01_reproduce_screening.ipynb)** | CPU-only reconstruction of every reported screening count and the final candidate manifest from committed data. |
@@ -55,6 +57,34 @@ and assay plan.
 | **[Methods](docs/METHODS.md)** | Exact ranking equations, thresholds, tier definitions, and selection logic. |
 | **[Physicochemical calculations](docs/PHYSICOCHEMICAL.md)** | Descriptor equations, assumptions, limitations, and supporting literature. |
 | **[References](docs/REFERENCES.md)** | Target biology, model, descriptor, and representative inhibitor bibliography. |
+
+## Competition evaluator quick start
+
+This repository is submitted to **Track 1: AI Macromolecule and Peptide Drug
+Design**. The team used pretrained open-source BoltzGen, BoltzIF, and Boltz-2
+models and did not train or fine-tune a model.
+
+```bash
+git clone https://github.com/PerinMu/hIAPP-D-peptide-design.git
+cd hIAPP-D-peptide-design
+conda env create -f environment.yml
+conda activate hiapp-d-peptide-analysis
+bash run.sh
+```
+
+The entry point recomputes the screening funnel from the committed score table,
+validates all review-stage counts and structure links, and writes:
+
+- [`results/submission/results.csv`](results/submission/results.csv):
+  authoritative UTF-8 candidate manifest;
+- [`results/submission/results.xlsx`](results/submission/results.xlsx): formatted
+  convenience mirror;
+- `results/submission/run_metadata.json`: run timestamp, repository revision,
+  software/platform versions, input hashes, and output hash.
+
+The CPU reproduction uses deterministic ranking code and does not require the
+GPU model environments. Full stochastic regeneration from PDB 9ULZ is provided
+in the primary notebook and Slurm templates.
 
 ## Key results
 
@@ -194,8 +224,9 @@ python -m pip install --upgrade pip
 python -m pip install -r requirements.txt
 ```
 
-Core analysis dependencies are version-bounded in [`requirements.txt`](requirements.txt):
-Pandas, NumPy, Matplotlib, Seaborn, OpenPyXL, JupyterLab, nbclient, and ipykernel.
+Core analysis dependencies are version-bounded in [`requirements.txt`](requirements.txt).
+The exact evaluator reference environment, including Python 3.11.9 and pinned
+package versions, is available in [`environment.yml`](environment.yml).
 
 ### 3. GPU model environments
 
@@ -218,6 +249,20 @@ boltz predict --help
 
 Production generation and prediction require a CUDA-capable NVIDIA GPU. The
 repository provides Slurm templates for multi-job execution and retry recovery.
+
+The recovered production stack identifies `boltzgen` 0.2.0 and a still-installed
+`boltz` 2.2.1 environment. BoltzGen used a hashed Ubuntu 22.04 CUDA 12.4.1/cuDNN
+9.1 Singularity image; Boltz-2 used CUDA 12.8 and RTX 4090 jobs. Generation and
+inverse folding requested four GPUs, while prediction used one GPU per job with
+up to eight concurrent jobs. Exact checkpoint and container hashes, dependency
+snapshots, hardware distinctions, scheduler evidence, and the remaining seed
+and service-version limitations are documented in the [Model Card](MODEL_CARD.md)
+and [production environment record](docs/PRODUCTION_ENVIRONMENT.md). No missing
+value is silently inferred.
+
+Sanitized full package snapshots are committed as
+[`environments/boltzgen-production-pip-freeze.txt`](environments/boltzgen-production-pip-freeze.txt)
+and [`environments/boltz2-production-pip-freeze.txt`](environments/boltz2-production-pip-freeze.txt).
 
 ### 4. Model downloads and caches
 
@@ -341,6 +386,7 @@ identified as project-specific heuristics.
 | [`data/scored/`](data/scored/) | Committed structure, affinity, and sequence-property table used for reproduction. |
 | [`results/screening/`](results/screening/) | Hard-gate, P1–P3, P4, and funnel-summary tables. |
 | [`results/final_candidates/`](results/final_candidates/) | Final 12 manifest and predicted complexes. |
+| [`results/submission/`](results/submission/) | Standardized competition `results.csv`, formatted workbook mirror, and field definitions. |
 | [`scripts/`](scripts/) | Reusable extraction, conversion, prediction-input, collection, scoring, screening, and review utilities. |
 | [`hpc/`](hpc/) | Slurm submission, bounded-concurrency, and failed-job recovery templates. |
 | [`wetlab/`](wetlab/) | Structured assay plan and raw-data template for experimental validation. |
@@ -348,6 +394,9 @@ identified as project-specific heuristics.
 The 76-entry reference-inhibitor set is linked to a grouped English provenance
 index in [`reference_inhibitor_sources.csv`](data/designs/reference_inhibitor_sources.csv).
 The [data dictionary](docs/DATA_DICTIONARY.md) defines every analysis field.
+Dataset origin, acquisition dates, preprocessing, licensing, split
+applicability, and leakage controls are consolidated in
+[`docs/DATA_PROVENANCE.md`](docs/DATA_PROVENANCE.md).
 
 ## Reproducibility features
 
@@ -365,6 +414,8 @@ The [data dictionary](docs/DATA_DICTIONARY.md) defines every analysis field.
   source coverage, screening outputs, and executable notebook reproduction.
 - Explicit separation of model predictions, physicochemical heuristics, manual
   review, and future experimental evidence.
+- A single competition entry point that records input/output SHA256 checksums
+  and runtime metadata while regenerating the standardized final manifest.
 
 ## Experimental validation
 
@@ -384,10 +435,13 @@ results.
 ## Documentation
 
 - [Scientific background and framework scope](docs/BACKGROUND.md)
+- [Model Card](MODEL_CARD.md)
 - [Computational methods](docs/METHODS.md)
 - [Physicochemical equations and references](docs/PHYSICOCHEMICAL.md)
 - [Data dictionary](docs/DATA_DICTIONARY.md)
+- [Data provenance, licensing, and leakage controls](docs/DATA_PROVENANCE.md)
 - [Reproducibility and count reconciliation](docs/REPRODUCIBILITY.md)
+- [Competition requirement checklist](docs/COMPETITION_COMPLIANCE.md)
 - [Scientific bibliography](docs/REFERENCES.md)
 
 ## Citation and license
@@ -398,4 +452,6 @@ use should also cite BoltzGen, Boltz-2, and PDB 9ULZ as listed in
 
 Repository code is released under the [MIT License](LICENSE). External model
 weights, packages, and structural data remain subject to their respective
-licenses and terms.
+licenses and terms. BoltzGen and Boltz currently publish their code under the
+MIT License; evaluators should verify the linked upstream licenses and weight
+terms for the exact version they download.

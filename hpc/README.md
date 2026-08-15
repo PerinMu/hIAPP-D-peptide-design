@@ -22,3 +22,27 @@ overwrite model results.
 All resource requests, environment names, cache locations, output paths, and
 concurrency limits are controlled through command arguments or environment
 variables, making the templates portable across Slurm clusters.
+
+## Historical provenance recovery
+
+Two site-specific, read-only collectors recover reproducibility metadata from
+the original August 2026 cloud environments without rerunning a model:
+
+- `collect_provenance_boltzgen_scz0223.sh` covers the Singularity-based
+  BoltzGen and BoltzIF environment.
+- `collect_provenance_boltz2_scxj525.sh` covers the Conda/CUDA Boltz-2
+  environment and records the installed MSA-server implementation clues.
+
+Run the applicable collector once with `bash` on its login node. It submits
+itself as a one-GPU Slurm job, hashes checkpoints and containers without copying
+them, captures package/GPU/Slurm metadata, and writes a `.tar.gz` archive plus a
+SHA-256 sidecar under the project's `provenance/` directory. The collectors do
+not read shell history, copy predicted structures, or export credentials. Review
+the archive before publication because account paths and compute-node hostnames
+are retained as provenance evidence.
+
+The August 2026 recovery bundles were verified locally and distilled into the
+credential-free [`production environment record`](../docs/PRODUCTION_ENVIRONMENT.md)
+and sanitized dependency snapshots under [`environments/`](../environments/).
+Raw collector archives, checksum sidecars, and logs are intentionally ignored by
+Git and must not be uploaded without a separate privacy review.
