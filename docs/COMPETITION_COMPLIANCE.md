@@ -3,6 +3,12 @@
 This checklist maps the repository to *Attachment 5: Code Submission
 Requirements* for the First Global University Student Life Science Challenge.
 
+This GitHub repository is the official public code-submission location for the
+project. It is organized for evaluator review rather than as a continuously
+supported clinical or production service. [`README.md`](../README.md) and the
+English technical documents are authoritative; [`README_CN.md`](../README_CN.md)
+is a concise navigation aid.
+
 | Requirement | Repository evidence | Status |
 |---|---|---|
 | Commented algorithm source and complete commands | `scripts/`, `hpc/`, `README.md`, full workflow notebook | Complete |
@@ -19,7 +25,11 @@ Requirements* for the First Global University Student Life Science Challenge.
 | Standard final candidate file | `results/submission/results.csv` and convenience mirror `results.xlsx` | Complete |
 | Structure filenames and files | `structure_file` column and `results/final_candidates/structures/` | Complete |
 | Relative paths/configuration and fixed deterministic processing | `run.sh`, `scripts/`, `hpc/`, notebooks | Complete |
+| Expected runtime and hardware | README quick-start table and `docs/PRODUCTION_ENVIRONMENT.md` | Complete for CPU reproduction and recovered production allocations |
+| Random seeds and stochastic-run disclosure | `MODEL_CARD.md` and `docs/PRODUCTION_ENVIRONMENT.md` | Historical production seed was not recorded; limitation is explicitly disclosed and no value is fabricated |
+| Third-party API/commercial platform record | No commercial API was used; Boltz automatic MSA behavior is documented in the Model Card and production record | Complete within retained evidence; service-side version and returned alignments were not archived |
 | Originality and IP/license statement | `LICENSE`, `MODEL_CARD.md`, references | Complete |
+| Public evaluator navigation | `README.md`, `README_CN.md`, and this checklist | Complete |
 
 ## Evaluator command
 
@@ -42,3 +52,17 @@ Wrote 12 candidates to .../results/submission/results.csv
 Neural generation and prediction require the separate GPU environments and
 Slurm workflow described in the primary notebook; the evaluator command above
 reproduces the deposited ranking and standardized final submission on CPU.
+
+## Disclosed historical limits
+
+- No project model was trained or fine-tuned, so training scripts, train/test
+  splits, training logs, and team-generated model weights are not applicable.
+- The original stochastic production seed and upstream package source Git
+  revisions were not recorded. Recovered package versions, checkpoint hashes,
+  container hash, dependency snapshots, hardware evidence, and scheduler
+  records are published instead.
+- The exact GPU model for the historical BoltzGen jobs and the MSA
+  service-side version/returned alignments remain unavailable and are not
+  inferred.
+- Wet-lab validation is in progress and intentionally excluded until controlled
+  replicate-level results are ready for deposition.

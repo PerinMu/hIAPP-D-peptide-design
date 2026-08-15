@@ -1,8 +1,15 @@
-# Generative D-peptide design: an end-to-end framework
+# Competition submission: generative D-peptide design
 
 [![Reproducibility checks](https://github.com/PerinMu/hIAPP-D-peptide-design/actions/workflows/validate.yml/badge.svg)](https://github.com/PerinMu/hIAPP-D-peptide-design/actions/workflows/validate.yml)
 [![Python 3.11+](https://img.shields.io/badge/Python-3.11%2B-3776AB?logo=python&logoColor=white)](https://www.python.org/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+
+**Official public code and reproducibility package for Track 1 of the First
+Global University Student Life Science Challenge.**
+
+[Chinese evaluator guide](README_CN.md) ·
+[Competition requirement checklist](docs/COMPETITION_COMPLIANCE.md) ·
+[Standardized results](results/submission/results.csv)
 
 An end-to-end, auditable framework for **structure-guided de novo D-peptide
 design**. It connects all-atom sequence–structure co-design, inverse folding,
@@ -18,6 +25,22 @@ replacing the target structure, binding-site definition, campaign parameters,
 and assay plan.
 
 ![Computational design and screening workflow](docs/assets/workflow.png)
+
+## Submission scope
+
+This repository is maintained as the public competition submission and its
+reproducibility record. It contains the code, configurations, documented model
+invocations, committed intermediate tables, predicted structures, standardized
+candidate files, and evidence needed for evaluator review. Updates are limited
+to submission corrections, reproducibility evidence, and validated project
+results.
+
+The team did not train or fine-tune BoltzGen, BoltzIF, or Boltz-2. The project
+contribution is the target-conditioned D-peptide design workflow, explicit
+stereochemical conversion, failure recovery, physicochemical characterization,
+multi-objective prioritization, structure review, and auditable hIAPP case
+study. Wet-lab validation is in progress; no measured activity is claimed in
+this release.
 
 ## Highlights
 
@@ -48,6 +71,8 @@ and assay plan.
 | Resource | What it provides |
 |---|---|
 | **[`run.sh`](run.sh)** | Competition evaluator entry point: one CPU command reproduces screening and writes the standardized 12-candidate `results.csv`. |
+| **[Chinese evaluator guide](README_CN.md)** | Concise Chinese navigation for quick review; the English technical record remains authoritative. |
+| **[Scoring alignment](docs/SCORING_ALIGNMENT.md)** | Direct map from the five competition scoring categories to repository evidence and current evidence boundaries. |
 | **[Model Card](MODEL_CARD.md)** | Third-party model provenance, production configuration, hardware, scope, inputs/outputs, uncertainty, and known limitations. |
 | **[Scientific background and innovation](docs/BACKGROUND.md)** | D-peptide rationale, comparison with established discovery routes, framework scope, and evidence boundaries. |
 | **[Full design-to-selection notebook](notebooks/00_full_generation_to_selection.ipynb)** | Step-by-step BoltzGen generation, BoltzIF redesign, Boltz-2 prediction, retry handling, score collection, screening, and structure review on a Slurm GPU server. |
@@ -57,6 +82,7 @@ and assay plan.
 | **[Methods](docs/METHODS.md)** | Exact ranking equations, thresholds, tier definitions, and selection logic. |
 | **[Physicochemical calculations](docs/PHYSICOCHEMICAL.md)** | Descriptor equations, assumptions, limitations, and supporting literature. |
 | **[References](docs/REFERENCES.md)** | Target biology, model, descriptor, and representative inhibitor bibliography. |
+| **[Attachment 5 compliance](docs/COMPETITION_COMPLIANCE.md)** | Requirement-by-requirement code-submission checklist. |
 
 ## Competition evaluator quick start
 
@@ -85,6 +111,11 @@ validates all review-stage counts and structure links, and writes:
 The CPU reproduction uses deterministic ranking code and does not require the
 GPU model environments. Full stochastic regeneration from PDB 9ULZ is provided
 in the primary notebook and Slurm templates.
+
+| Reproduction path | Hardware | Expected scope and runtime |
+|---|---|---|
+| Evaluator command, `bash run.sh` | CPU only | Rebuilds the complete deposited screening funnel and 12-row UTF-8 result file; normally completes in under one minute after dependencies are installed |
+| Full BoltzGen/BoltzIF/Boltz-2 regeneration | NVIDIA GPU Slurm platform | Recreates stochastic generation and prediction; production allocations, observed timings, retries, and GPU-hour accounting are reported in the [production environment record](docs/PRODUCTION_ENVIRONMENT.md) |
 
 ## Key results
 
@@ -441,6 +472,7 @@ results.
 - [Data dictionary](docs/DATA_DICTIONARY.md)
 - [Data provenance, licensing, and leakage controls](docs/DATA_PROVENANCE.md)
 - [Reproducibility and count reconciliation](docs/REPRODUCIBILITY.md)
+- [Competition scoring alignment](docs/SCORING_ALIGNMENT.md)
 - [Competition requirement checklist](docs/COMPETITION_COMPLIANCE.md)
 - [Scientific bibliography](docs/REFERENCES.md)
 
@@ -455,3 +487,7 @@ weights, packages, and structural data remain subject to their respective
 licenses and terms. BoltzGen and Boltz currently publish their code under the
 MIT License; evaluators should verify the linked upstream licenses and weight
 terms for the exact version they download.
+
+This release is a research and competition artifact. Predicted affinity,
+structure, and developability scores are prioritization signals, not clinical
+claims or experimentally measured therapeutic effects.
