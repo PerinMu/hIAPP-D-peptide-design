@@ -1,4 +1,6 @@
-# Competition submission: generative D-peptide design
+# Stereochemistry-aware multi-model D-peptide design
+
+> **From open foundation models to an auditable D-peptide design system.**
 
 [![Reproducibility checks](https://github.com/PerinMu/hIAPP-D-peptide-design/actions/workflows/validate.yml/badge.svg)](https://github.com/PerinMu/hIAPP-D-peptide-design/actions/workflows/validate.yml)
 [![Python 3.11+](https://img.shields.io/badge/Python-3.11%2B-3776AB?logo=python&logoColor=white)](https://www.python.org/)
@@ -28,10 +30,13 @@ Global University Student Life Science Challenge.**
 [Standardized results](results/submission/results.csv)
 
 An end-to-end, auditable framework for **structure-guided de novo D-peptide
-design**. It connects all-atom sequence–structure co-design, inverse folding,
-explicit D-stereochemical encoding, complex prediction, interpretable
-developability analysis, multi-objective prioritization, and experimental
-handoff in one reproducible workflow.
+design**. Rather than fitting a task-specific model to the structurally sparse
+D-peptide–L-protein data regime, it orchestrates complementary open-source
+pretrained models through a project-developed, stereochemistry-aware decision
+layer. The workflow connects all-atom sequence–structure co-design, inverse
+folding, explicit chirality specification and validation, cross-model complex
+assessment, interpretable developability analysis, diversity-aware
+multi-objective prioritization, and experimental handoff.
 
 Human islet amyloid polypeptide (hIAPP) is the worked case study. Starting from
 PDB 9ULZ, the campaign generated a 9,806-design ranking pool and selected 12
@@ -52,11 +57,13 @@ to submission corrections, reproducibility evidence, and validated project
 results.
 
 The team did not train or fine-tune BoltzGen, BoltzIF, or Boltz-2. The project
-contribution is the target-conditioned D-peptide design workflow, explicit
-stereochemical conversion, failure recovery, physicochemical characterization,
-multi-objective prioritization, structure review, and auditable hIAPP case
-study. Wet-lab validation is in progress; no measured activity is claimed in
-this release.
+contribution is a **stereochemistry-aware multi-model orchestration framework**:
+target-conditioned all-atom generation, backbone-conditioned diversification,
+explicit chirality specification and computational validation, cross-model
+structural and direction-aware affinity consensus, developability-aware
+multi-objective optimization, diversity-constrained priority tiers, and an
+auditable hIAPP case study. Wet-lab validation is in progress; no measured
+activity is claimed in this release.
 
 ## Highlights
 
@@ -76,6 +83,10 @@ this release.
 - **Interpretable multi-objective selection:** affinity-head consensus,
   structure confidence, solubility, aggregation risk, stability, diversity, and
   manual interface review are documented separately.
+- **Stereochemistry-aware model bridge:** reverse-D transformation is coupled
+  to residue-level chirality specification, explicit isomeric SMILES, and
+  computational checks of sequence order and stereocentre assignment before
+  independent complex assessment.
 - **Traceable evidence:** each final peptide connects to source sequences,
   prediction scores, selection tier, review stage, and a model-0 complex CIF.
 - **Automated quality control:** GitHub Actions executes the screening notebook
@@ -91,7 +102,7 @@ this release.
 | **[Scoring alignment](docs/SCORING_ALIGNMENT.md)** | Direct map from the five competition scoring categories to repository evidence and current evidence boundaries. |
 | **[Model Card](MODEL_CARD.md)** | Third-party model provenance, production configuration, hardware, scope, inputs/outputs, uncertainty, and known limitations. |
 | **[Scientific background and innovation](docs/BACKGROUND.md)** | D-peptide rationale, comparison with established discovery routes, framework scope, and evidence boundaries. |
-| **[Full design-to-selection notebook](notebooks/00_full_generation_to_selection.ipynb)** | Step-by-step BoltzGen generation, BoltzIF redesign, Boltz-2 prediction, retry handling, score collection, screening, and structure review on a Slurm GPU server. |
+| **[Full design-to-selection notebook](notebooks/00_full_generation_to_selection.ipynb)** | Step-by-step BoltzGen generation, BoltzIF redesign, chirality specification and validation, Boltz-2 prediction, evidence integration, multi-objective screening, and structure review on a Slurm GPU server. |
 | **[Screening reproduction notebook](notebooks/01_reproduce_screening.ipynb)** | CPU-only reconstruction of every reported screening count and the final candidate manifest from committed data. |
 | **[Final 12 candidates](results/final_candidates/final_12.csv)** | Machine-readable synthesis shortlist with priority tier, design provenance, experimental status, and structure filenames. |
 | **[Predicted complexes](results/final_candidates/structures/)** | Boltz-2 model-0 CIF structures used during manual review. |
@@ -183,19 +194,23 @@ dynamics. These approaches are valuable, but can require a chemically
 synthesized mirror target, a known interaction motif, a suitable scaffold, or
 substantial per-candidate sampling.
 
-This framework explores a complementary route. BoltzGen is a general all-atom
-diffusion model that can generate residue identities and three-dimensional
-structure together while conditioning on a target and binding site. BoltzIF
-expands sequence diversity; stereochemistry-aware reverse-D conversion creates
-the D-peptide representations; Boltz-2 supplies independent complex-confidence
-signals; and an explicit multi-objective layer balances predicted interaction,
-structure quality, solubility, aggregation risk, stability, diversity, and
-synthetic tractability.
+This framework explores a complementary route. Instead of training a new model
+on an underpowered task-specific dataset, it transfers complementary capability
+from recent open-source pretrained models into a D-peptide design system.
+BoltzGen jointly generates residue identities and three-dimensional structure
+while conditioning on a target and binding site; BoltzIF expands
+backbone-conditioned sequence diversity; the project-developed stereochemical
+bridge specifies and verifies reverse-D representations; Boltz-2 supplies an
+independent complex assessment; and a transparent decision layer integrates
+direction-aware affinity consensus, structural confidence, developability, and
+diversity constraints.
 
-The resulting advantage is **broader, automated candidate-space exploration
-with a fully traceable selection path**, not an unqualified claim that one model
-outperforms every established D-peptide method. Experimental performance remains
-target- and assay-dependent. See the full [background and method comparison](docs/BACKGROUND.md).
+The innovation is therefore not another black-box foundation model, but the
+translation of complementary model capabilities into **broader candidate-space
+exploration with a fully traceable selection path**. This is not an unqualified
+claim that one model outperforms every established D-peptide method;
+experimental performance remains target- and assay-dependent. See the full
+[background and method comparison](docs/BACKGROUND.md).
 
 ## hIAPP case study
 

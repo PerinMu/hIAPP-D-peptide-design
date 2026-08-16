@@ -3,15 +3,19 @@
 ## Summary
 
 This repository combines externally developed, open-source pretrained models
-with project-specific stereochemical conversion, physicochemical descriptors,
-multi-objective ranking, failure recovery, and structural review. The team did
-**not** train or fine-tune BoltzGen, BoltzIF, or Boltz-2. No `train.py`, training
-split, training log, or team-trained weight is therefore applicable.
+through a project-specific, stereochemistry-aware orchestration and decision
+layer. That layer provides reverse-D chirality specification and validation,
+cross-model structural assessment, direction-aware affinity evidence
+integration, interpretable developability representation, diversity-constrained
+multi-objective prioritization, and structural review. The team did **not**
+train or fine-tune BoltzGen, BoltzIF, or Boltz-2. No `train.py`, training split,
+training log, or team-trained weight is therefore applicable.
 
-The project contribution is an end-to-end reverse-D peptide design and
-screening workflow, demonstrated against human islet amyloid polypeptide
-(hIAPP). It turns model outputs into an auditable candidate funnel and a
-standardized 12-candidate submission manifest.
+The project contribution is not a new foundation model; it is the task-specific
+intelligence that converts complementary pretrained capabilities into an
+end-to-end reverse-D peptide design system. Demonstrated against human islet
+amyloid polypeptide (hIAPP), it turns model outputs into an auditable candidate
+funnel and a standardized 12-candidate submission manifest.
 
 ## Components and provenance
 

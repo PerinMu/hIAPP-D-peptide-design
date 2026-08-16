@@ -14,7 +14,7 @@ fully documented reference configuration:
 
 ```text
 PDB 9ULZ → BoltzGen → BoltzIF → reverse-D SMILES → Boltz-2
-→ retry recovery → score collection → physicochemical descriptors
+→ chirality validation → cross-model evidence integration
 → P1-P4 prioritization → structure review → final 12
 ```
 

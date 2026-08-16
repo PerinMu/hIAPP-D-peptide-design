@@ -1,4 +1,4 @@
-# Scientific background and framework scope
+# Scientific background: a stereochemistry-aware multi-model framework
 
 ## A general D-peptide design problem
 
@@ -17,6 +17,17 @@ structure, remain soluble, avoid self-aggregation and obvious chemical
 liabilities, cover an actionable target epitope, retain sequence diversity, and
 be experimentally tractable. This repository treats those requirements as one
 connected design funnel rather than isolated calculations.
+
+The available data regime also shapes the computational strategy. Experimentally
+resolved D-peptide–L-protein complexes remain scarce and heterogeneous, a
+limitation explicitly identified by recent D-peptide design work. Such data are
+valuable for benchmarking and method development, but are not an adequate basis
+for claiming a reliable project-specific foundation model. At the same time,
+flexible peptide design presents a combinatorial sequence–conformation problem:
+physics- and energy-based methods remain powerful and interpretable, yet their
+practical results depend on tractable sampling and approximate scoring. The
+project therefore treats pretrained-model orchestration as a data-efficient
+systems strategy, not as a substitute for physical reasoning or experiment.
 
 ## Established discovery routes
 
@@ -57,25 +68,28 @@ constraints. Its published scope includes proteins, peptides, nanobodies, and
 multiple target modalities. The model authors experimentally evaluated the
 platform across eight campaigns and 26 targets.
 
-This repository turns that general model capability into a D-peptide-oriented
-workflow:
+This repository turns complementary pretrained-model capabilities into a
+stereochemistry-aware D-peptide design and decision system:
 
 1. define a target structure and intended binding region;
 2. co-generate peptide sequence and all-atom structure in the target context;
 3. use BoltzIF to diversify sequences conditioned on generated backbones;
-4. reverse the sequence and encode every residue with explicit D
-   stereochemistry in a linear-peptide SMILES representation;
-5. independently predict the target–candidate complex with Boltz-2;
-6. calculate transparent sequence-property descriptors;
-7. apply hard gates, consensus ranking, diversity control, and structure review;
+4. perform reverse-D transformation, specify residue chirality explicitly, and
+   validate sequence order and stereocentre assignments in isomeric SMILES;
+5. independently assess the target–candidate complex with Boltz-2;
+6. construct an interpretable physicochemical and developability representation;
+7. integrate direction-aware affinity evidence, structural confidence,
+   developability constraints, diversity control, and expert structure review;
 8. export a traceable experimental shortlist and assay-ready data schema.
 
-The innovation is the integration: a recent all-atom generative design model is
-connected to an explicit stereochemical bridge, independent complex assessment,
-developability-aware selection, failure recovery, and reproducible experimental
-handoff. The workflow explores many more candidate hypotheses than manual
-hotspot placement alone and avoids treating any single learned or physics-based
-score as definitive.
+The innovation is the integration: recent all-atom generative and interaction
+models are connected by a project-developed stereochemical bridge and a
+transparent multi-objective decision layer. This layer combines chirality-aware
+representation, independent complex assessment, direction-aware affinity
+consensus, developability-aware optimization, and diversity-constrained
+prioritization. The workflow explores many more candidate hypotheses than
+manual hotspot placement alone and avoids treating any single learned or
+physics-based score as definitive.
 
 ## Evidence boundary
 
@@ -135,6 +149,13 @@ claims remain specific to the evidence collected for each target.
 - Juraszek J, Kadam RU, Branduardi D, et al. De novo design of D-peptide
   ligands: application to influenza virus hemagglutinin. *PNAS*.
   2025;122:e2426554122. [doi:10.1073/pnas.2426554122](https://doi.org/10.1073/pnas.2426554122)
+- Childs H, Guerin N, Zhou P, Donald BR. Protocol for designing de novo
+  noncanonical peptide binders in OSPREY. *Journal of Computational Biology*.
+  2024. [doi:10.1089/cmb.2024.0669](https://doi.org/10.1089/cmb.2024.0669)
+- Loshbaugh AL, Kortemme T. Comparison of Rosetta flexible-backbone
+  computational protein design methods on binding interactions. *Proteins*.
+  2020;88:206–226.
+  [doi:10.1002/prot.25790](https://doi.org/10.1002/prot.25790)
 - Olubiyi OO, Frenzel D, Bartnik D, et al. Amyloid aggregation inhibitory
   mechanism of arginine-rich D-peptides. *Current Medicinal Chemistry*.
   2014;21:1448–1457. [doi:10.2174/0929867321666131129122247](https://doi.org/10.2174/0929867321666131129122247)

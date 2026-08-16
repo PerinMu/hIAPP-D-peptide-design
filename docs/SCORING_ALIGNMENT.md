@@ -19,8 +19,8 @@ claims or predict a competition score.
 
 - The [full GPU notebook](../notebooks/00_full_generation_to_selection.ipynb)
   covers target preparation, BoltzGen design, BoltzIF diversification,
-  reverse-D stereochemical encoding, Boltz-2 prediction, retry recovery,
-  scoring, and selection.
+  reverse-D chirality specification and validation, Boltz-2 complex assessment,
+  direction-aware affinity evidence integration, and multi-objective selection.
 - [`METHODS.md`](METHODS.md) records exact filters, equations, ranking weights,
   priority tiers, sequence de-redundancy, and manual structure-review criteria.
 - [`PHYSICOCHEMICAL.md`](PHYSICOCHEMICAL.md) documents every sequence descriptor,
