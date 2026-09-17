@@ -1,6 +1,6 @@
 # Reproducibility and data lineage
 
-## One-command evaluator reproduction
+## Reproduce the screening results
 
 ```bash
 conda env create -f environment.yml

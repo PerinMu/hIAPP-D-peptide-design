@@ -15,9 +15,16 @@ usage() {
 
 while [[ $# -gt 0 ]]; do
   case "$1" in
-    --scores) SCORES="$2"; shift 2 ;;
-    --final) FINAL="$2"; shift 2 ;;
-    --output-dir) OUTPUT_DIR="$2"; shift 2 ;;
+    --scores|--final|--output-dir)
+      if [[ $# -lt 2 || -z "$2" || "$2" == --* ]]; then
+        echo "Missing value for $1" >&2; usage; exit 2
+      fi
+      case "$1" in
+        --scores) SCORES="$2" ;;
+        --final) FINAL="$2" ;;
+        --output-dir) OUTPUT_DIR="$2" ;;
+      esac
+      shift 2 ;;
     -h|--help) usage; exit 0 ;;
     *) echo "Unknown argument: $1" >&2; usage; exit 2 ;;
   esac

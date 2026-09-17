@@ -1,35 +1,27 @@
-# Reproducible generative D-peptide design notebooks
+# Notebooks
 
-The notebooks present a reusable design architecture and its complete hIAPP
-instantiation. Target structure, binding site, model paths, campaign size, and
-execution switches are exposed explicitly so the workflow can be adapted
-without rewriting the core scripts.
+## Full workflow
 
-## 1. Full generation-to-selection workflow
-
-Open [`00_full_generation_to_selection.ipynb`](00_full_generation_to_selection.ipynb)
-to reproduce the complete GPU workflow. For a new target, replace the structural
-inputs and parameter-cell values described in the notebook; the hIAPP run is the
-fully documented reference configuration:
+[00_full_generation_to_selection.ipynb](00_full_generation_to_selection.ipynb)
+contains installation and execution steps for:
 
 ```text
-PDB 9ULZ → BoltzGen → BoltzIF → reverse-D SMILES → Boltz-2
-→ chirality validation → cross-model evidence integration
-→ P1-P4 prioritization → structure review → final 12
+BoltzGen → BoltzIF → reverse-D SMILES → Boltz-2 → screening → structure review
 ```
 
-The first parameter cell contains all server, environment, cache, and checkpoint
-paths. Slurm submission and CPU processing are controlled independently.
+Configure server paths, environments, caches, and checkpoints in the first
+parameter cell. CPU processing and Slurm submission have separate execution
+switches, both disabled by default. Wait for each GPU job to finish before
+processing its output. New runs may produce different sequences and counts.
 
-## 2. Screening-only reproduction
+## CPU reproduction
 
-Open [`01_reproduce_screening.ipynb`](01_reproduce_screening.ipynb) for the
-fastest verification of the reported results. It executes on CPU from committed
-data and asserts every funnel count, priority-tier count, structure link, and
-final candidate.
+[01_reproduce_screening.ipynb](01_reproduce_screening.ipynb) uses the saved score
+table to reproduce the filters and rankings. It checks candidate counts, tiers,
+structure files, and final-selection membership.
 
 ```bash
 jupyter lab notebooks/01_reproduce_screening.ipynb
 ```
 
-The same notebook is executed automatically by GitHub Actions on every update.
+GitHub Actions executes this notebook on each push and pull request.

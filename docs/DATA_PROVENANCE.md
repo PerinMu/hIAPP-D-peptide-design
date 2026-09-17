@@ -9,7 +9,7 @@
 | BoltzIF redesign table | Generated during the 2026-08-04 campaign | Backbone-conditioned sequence diversification | Project-generated model output; parameters committed |
 | Boltz-2 score table | Generated 2026-08-04 to 2026-08-08, including retry batches | Complex-confidence and relative affinity signals | Project-generated model output; collection and retry scripts committed |
 | Automatic MSA input | Requested through Boltz `--use_msa_server` during the prediction window | hIAPP target alignment context | Installed Boltz 2.2.1 default: `https://api.colabfold.com`; service version, request log, and returned alignment archive were not retained |
-| Reference inhibitor set | Literature/source workbook, mapped to 76 English source records | Descriptor-space context for P3 novelty only | Row-group source status and DOI verification flags are committed; original papers remain authoritative |
+| Reference inhibitor set | Literature/source workbook, 76 usable entries with a grouped English source index | Descriptor-space context for P3 novelty only | Row-group source status and DOI verification flags are committed; original papers remain authoritative |
 | Final 12 manifest and mmCIF files | Project screening and manual structure review | Experimental shortlist | Project-generated results; all values are computational unless explicitly labeled otherwise |
 
 The repository does not contain a hidden or restricted dataset. Large
@@ -62,8 +62,32 @@ policies are described by their authors.
 ## Integrity controls
 
 `run.sh` records SHA256 checksums for its scored input, final-review manifest,
-and generated `results.csv`. The recovered model and container hashes are listed
+generated `results.csv`, generation code, screening tables and final structures.
+The recovered model and container hashes are listed
 in [`PRODUCTION_ENVIRONMENT.md`](PRODUCTION_ENVIRONMENT.md). New stochastic
 inference campaigns should use new versioned output directories and capture
 package versions, model revisions, checkpoint hashes, random seeds, GPU/driver
 details, and scheduler logs before analysis.
+
+## Missing provenance records
+
+The following records are incomplete or were not retained. Upstream model
+papers are linked in the Model Card; their training datasets have not been
+independently inventoried here.
+
+| Resource | Known information | Missing record or review |
+|---|---|---|
+| BoltzGen/BoltzIF upstream pretraining data | External pretrained models; model/package identifiers and author sources are in the Model Card | Exact datasets/releases, cutoff and acquisition dates, license applicability and overlap with the target/reference set have not been independently inventoried |
+| Boltz-2 upstream training data | External model; recovered package and checkpoint hashes recorded | Exact structure/affinity dataset versions, cutoffs and applicable data permissions need an upstream source-based inventory |
+| PDB 9ULZ | Accession, campaign selection date and local input structures retained | Campaign selection date is not a download timestamp; original retrieval log and applicable data-use terms should be retained if available |
+| Reference inhibitor workbook | 76 usable entries and a row-group source mapping | Exact workbook version/acquisition date, unverified original papers and permissions for any redistributed source material need confirmation |
+| Runtime MSA | Prediction window and recovered endpoint default | Database releases, service version, requests and returned alignments unavailable |
+| Manual structure review | Final 12 identities, tiers and stage labels retained | A complete original 42-candidate review sheet with reasons, reviewer/date and rejected candidates is not deposited |
+
+The reference set contains 76 usable **entries**, not necessarily 76 independent
+papers. Source groups and their verification flags are given in
+`data/designs/reference_inhibitor_sources.csv`. No reference-set activity AUC or
+independent experimental validation is claimed.
+
+Overlap with an external model's training data or an undisclosed evaluation
+set has not been independently checked.

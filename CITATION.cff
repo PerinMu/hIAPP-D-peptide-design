@@ -1,6 +1,6 @@
 cff-version: 1.2.0
 message: "If you use this workflow, please cite this repository, BoltzGen, Boltz-2, and PDB 9ULZ."
-title: "A generative D-peptide design framework: the hIAPP case study"
+title: "hIAPP D-peptide design"
 type: software
 version: 1.0.0
 date-released: 2026-08-12

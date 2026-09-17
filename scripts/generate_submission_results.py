@@ -159,6 +159,25 @@ def validate_screening(screening_dir: Path) -> None:
             raise ValueError(f"Screening artifact failed validation: {path} (expected {rows} rows)")
 
 
+def validate_final_review(final_path: Path, screening_dir: Path) -> None:
+    """Verify the historical human choices against the recomputed tier pools."""
+    final = pd.read_csv(final_path).sort_values("final_rank")
+    if final["final_rank"].tolist() != list(range(1, 13)):
+        raise ValueError("Final ranks must be the consecutive integers 1 through 12")
+    if final["priority"].value_counts().to_dict() != {"P1": 8, "P2": 1, "P3": 1, "P4": 2}:
+        raise ValueError("Historical final tier composition must be P1/P2/P3/P4 = 8/1/1/2")
+    main_review = pd.read_csv(screening_dir / "p1_p2_p3_top32.csv")
+    p4_review = pd.read_csv(screening_dir / "p4_top10.csv")
+    pools = {tier: set(main_review.loc[main_review["priority"] == tier, "d_sequence"])
+             for tier in ("P1", "P2", "P3")}
+    pools["P4"] = set(p4_review["d_sequence"])
+    for row in final.itertuples():
+        if row.d_peptide_sequence not in pools[row.priority]:
+            raise ValueError(f"Candidate is outside its review tier: {row.d_peptide_sequence}")
+        if row.d_peptide_sequence != row.l_sequence[::-1].lower():
+            raise ValueError(f"Reverse-D sequence mismatch: {row.d_peptide_sequence}")
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--scores", type=Path, required=True)
@@ -170,6 +189,7 @@ def main() -> None:
     args = parser.parse_args()
 
     validate_screening(args.screening_dir)
+    validate_final_review(args.final, args.screening_dir)
     results = build_results(args.scores, args.final, args.structures)
     if len(results) != 12 or not results["candidate_id"].is_unique:
         raise ValueError("Standardized output must contain exactly 12 unique candidates")
@@ -203,6 +223,18 @@ def main() -> None:
             "No random operation is used by this CPU reproduction entry point. Neural generation "
             "and prediction are separate stochastic GPU stages documented in the full notebook."
         ),
+        "code_sha256": {
+            str(path.relative_to(root)): sha256(path)
+            for path in [root / "run.sh", root / "scripts/screen_candidates.py",
+                         root / "scripts/generate_submission_results.py"]
+        },
+        "structure_sha256": {
+            name: sha256(args.structures / name)
+            for name in pd.read_csv(args.final)["structure_file"]
+        },
+        "screening_sha256": {
+            path.name: sha256(path) for path in sorted(args.screening_dir.glob("*.csv"))
+        },
         "output_rows": len(results),
         "output_sha256": sha256(args.output),
     }

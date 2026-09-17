@@ -1,8 +1,10 @@
-pandas>=2.2,<3
-numpy>=1.26,<3
-matplotlib>=3.8,<4
-seaborn>=0.13,<1
-openpyxl>=3.1,<4
-jupyterlab>=4,<5
-nbclient>=0.10,<1
-ipykernel>=6.29,<7
+# Direct evaluator dependencies; Python 3.11.9 is specified in environment.yml.
+# GPU model environments are separate; see environments/ and MODEL_CARD.md.
+pandas==2.2.3
+numpy==2.2.6
+matplotlib==3.10.3
+seaborn==0.13.2
+openpyxl==3.1.5
+jupyterlab==4.4.3
+nbclient==0.10.2
+ipykernel==6.29.5
